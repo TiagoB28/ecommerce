@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Models\Person;
+use App\Models\User;
 use App\Auth;
 use Respect\Validation\Validator as v;
 
@@ -21,6 +21,15 @@ class AuthController extends Controller
         }
 
         return $response->withRedirect($this->container->router->pathFor('admin.users'));
+    }
+
+    public function logout($request, $response)
+    {
+        if(isset($_SESSION['user'])) {
+            unset($_SESSION['user']);
+            return $response->withRedirect($this->container->router->pathFor('auth.login'));
+        }
+
     }
 
 

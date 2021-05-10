@@ -1,44 +1,48 @@
 <?php
 
+use App\Middleware\AuthMiddleware;
+
 $app->group('/site', function ($app) {
-    $app->get('/home', 'HomeController:home')->setName('site.home');
-    $app->get('/category', 'HomeController:getCategoryProducts')->setName('site.category');
-    $app->get('/product_detail', 'HomeController:getProductDetail')->setName('site.product-detail');
+    $app->map(['GET', 'POST'], '/login', 'SiteController:login')->setName('site.login');
+    $app->get('/home', 'SiteController:home')->setName('site.home');
+    $app->get('/category', 'SiteController:getCategoryProducts')->setName('site.category');
+    $app->get('/product_detail', 'SiteController:getProductDetail')->setName('site.product-detail');
+
+    $app->get('/cart', 'SiteController:getCartSession')->setName('site.cart');
 });
 
-
 $app->group('/admin', function ($app) {
-    $app->get('/main', 'PageAdminController:index')->setName('admin.main');
+    $app->get('/home', 'AdminController:index')->setName('admin.home');
+    $app->get('/users', 'AdminController:getUsers')->setName('admin.users');
+    $app->map(['GET', 'POST'], '/create', 'AdminController:createUser')->setName('admin.user-create');
+    $app->map(['GET', 'POST'], '/user/update/{id}', 'AdminController:updateUser')->setName('admin.user-update');
+    $app->get('/user/delete', 'AdminController:deleteUser');
 
-    $app->get('/users', 'PageAdminController:getUsers')->setName('admin.users');
-    $app->map(['GET', 'POST'], '/create', 'PageAdminController:createUser')->setName('admin.user-create');
-    $app->map(['GET', 'POST'], '/user/update/{id}', 'PageAdminController:updateUser')->setName('admin.user-update');
-    $app->get('/user/delete', 'PageAdminController:deleteUser');
-});
-
-
-$app->group('/admin', function ($app) {
     $app->get('/categories', 'CategoryController:getCategories')->setName('admin.categories');
     $app->map(['GET', 'POST'], '/category/create', 'CategoryController:createCategory')->setName('admin.category-create');
     $app->map(['GET', 'POST'], '/category/update/{id}', 'CategoryController:updateCategory')->setName('admin.category-update');
     $app->get('/category/delete', 'CategoryController:deleteCategory');
 
     $app->get('/categories/products/{id}', 'CategoryController:getProductCategory')->setName('admin.categories-products');
-});
+
+    /**
+     * Products VS Categories
+     */
+    $app->get('/categories/{id_cart}/products/{id_product}/add', 'CategoryController:addProductCategory')->setName('admin.categories-add');
+    $app->get('/categories/{id_cart}/products/{id_product}/remove', 'CategoryController:removeProductCategory')->setName('admin.categories-remove');
 
 
-$app->group('/admin', function ($app) {
     $app->get('/products', 'ProductController:getProducts')->setName('admin.products');
     $app->map(['GET', 'POST'], '/product/create', 'ProductController:createProduct')->setName('admin.product-create');
     $app->map(['GET', 'POST'], '/product/update/{id}', 'ProductController:updateProduct')->setName('admin.product-update');
     $app->get('/product/delete', 'ProductController:deleteProduct');
-
-});
+})->add(new AuthMiddleware($container));
 
 
 $app->group('/auth', function ($app) {
     $app->map(['GET', 'POST'],'/login', 'AuthController:login')->setName('auth.login');
     $app->map(['GET', 'POST'], '/forgot', 'AuthController:forgot')->setName('auth.forgot');
+    $app->get('/logout', 'AuthController:logout')->setName('auth.logout');
 });
 
 

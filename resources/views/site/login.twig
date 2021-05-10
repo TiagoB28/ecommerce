@@ -1,0 +1,116 @@
+{% extends "layouts/base_site.twig" %}
+
+{% block title %}Hcode - Login{% endblock %}
+
+{% block content_site %}
+
+<div class="product-big-title-area">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-full">
+                <div class="product-bit-title has-text-centered-desktop">
+                    <h2>Autenticação</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="single-product-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="columns">
+            <div class="column is-half">
+                <form action="{{ path_for('site.login') }}" id="login-form-wrap" class="login" method="post">
+                    <h2>Acessar</h2>
+                    <div class="field">
+                        <label class="label" for="login">E-mail <span class="required">*</span></label>
+                        <div class="control">
+                            <input type="text" id="login" name="login" class="input">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label" for="password">Senha <span class="required">*</span></label>
+                        <div class="control">
+                            <input type="password" id="password" name="password" class="input">
+                        </div>
+                    </div>
+
+                    <div class="is-clearfix"></div>
+
+                    <div class="field">
+                        <div class="control">
+                            <label class="checkbox">
+                                <input type="checkbox">
+                                Manter conectado
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="field is-grouped">
+                        <div class="control">
+                            <button type="submit" class="button is-success"> Login</button>
+                        </div>
+                    </div>
+                    <p class="lost_password">
+                        <a href="/forgot">Esqueceu a senha?</a>
+                    </p>
+
+                    <div class="clearfix"></div>
+                </form>
+
+            </div>
+            <div class="column is-half">
+                
+                {#<div class="alert alert-danger">
+                    Error!
+                </div>#}
+
+                <form id="register-form-wrap" action="/register" class="register" method="post">
+                    <h2>Criar conta</h2>
+
+                    <div class="field">
+                        <label class="label" for="nome">Nome Completo <span class="required">*</span></label>
+                        <div class="control">
+                            <input type="text" id="nome" name="name" class="input-text" value="">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label" for="email">E-mail <span class="required">*</span></label>
+                        <div class="control">
+                            <input type="email" id="email" name="email" class="input-text" value="">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label" for="phone">Telefone</label>
+                        <div class="control">
+                            <input type="text" id="phone" name="phone" class="input-text" value="">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label" for="senha">Senha <span class="required">*</span></label>
+                        <div class="control">
+                            <input type="password" id="senha" name="password" class="input-text">
+                        </div>
+                    </div>
+
+                    <div class="is-clearfix"></div>
+
+                    <div class="field is-grouped">
+                        <div class="control">
+                            <button type="submit" class="button is-success"> Criar Conta</button>
+                        </div>
+                    </div>
+
+                    <div class="clearfix"></div>
+                </form>               
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

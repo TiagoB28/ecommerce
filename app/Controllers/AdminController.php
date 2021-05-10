@@ -2,17 +2,25 @@
 
 namespace App\Controllers;
 
+use App\Models\Category;
 use App\Models\Person;
-
+use App\Models\User;
 use Respect\Validation\Validator as v;
 
-class PageAdminController extends Controller
+class AdminController extends Controller
 {
     public function index($request, $response)
     {
-        return $this->container->view->render($response, 'admin/main.twig');
-    }
+        $user_persons = Person::with('user')->get();
+        $user_name = User::find($_SESSION['user'])->deslogin;
 
+        $data = [
+            'user_persons' => $user_persons,
+            'user_name' => $user_name
+        ];
+
+        return $this->container->view->render($response, 'admin/home.twig', $data);
+    }
 
     public function getUsers($request, $response)
     {

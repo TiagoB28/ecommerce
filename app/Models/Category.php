@@ -11,13 +11,14 @@ class Category extends Model
 
     protected $fillable = [
         'descategory',
-        'dtregister',
+        'dtregister'
     ];
 
     public $timestamps = false;
 
-    public function user()
+    public function products()
     {
-        return $this->hasMany(ProductCategory::class, 'idproduct', 'idcategory');
+        return $this->belongsToMany(Product::class,
+            'tb_productscategories', 'idcategory', 'idproduct');
     }
 }

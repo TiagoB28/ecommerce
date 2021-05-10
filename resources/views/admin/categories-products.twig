@@ -2,49 +2,47 @@
 
 {% block content_admin %}
 
-<!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
 <!-- Content Header (Page header) -->
 <section class="content-header">
 
   <h1>
     Produtos da Categoria {{ category.descategory }}
   </h1>
-  <ol class="breadcrumb">
-    <li><a href="/admin"><i class="fa fa-dashboard"></i> Home</a></li>
-    <li><a href="/admin/categories">Categorias</a></li>
-    <li><a href="/admin/categories/{$category.idcategory}">{{ category.descategory }}</a></li>
-    <li class="active"><a href="/admin/categories/{$category.idcategory}/products">Produtos</a></li>
+  <ol class="breadcrumb" aria-label="breadcrumbs">
+    <li><a href="{{ base_url() }}/admin/main"><i class="fa fa-dashboard"></i> Home</a></li>
+    <li><a href="{{ base_url() }}/admin/categories">Categorias</a></li>
+    <li><a href="{{ base_url() }}/admin/categories/{{ category_id }}">{{ category_name }}</a></li>
+    <li class="is-active"><a href="{{ base_url() }}/admin/categories/{{ category_id }}/products" aria-current="page">Produtos</a></li>
   </ol>
 </section>
 
 <!-- Main content -->
 <section class="content">
 
-    <div class="row">
-        <div class="col-md-6">
+    <div class="columns">
+        <div class="column is-half">
             <div class="box box-primary">
                 <div class="box-header with-border">
                 <h3 class="box-title">Todos os Produtos</h3>
                 </div>
                 <!-- /.box-header -->
                 <!-- form start -->
-                <div class="box-body">
-                    <table class="table-container table-striped">
+                <div class="card">
+                    <table class="table table-striped">
                         <thead>
                             <tr>
                             <th style="width: 10px">#</th>
                             <th>Nome do Produto</th>
-                            <th style="width: 240px">&nbsp;</th>
+                            <th style="width: 100px">&nbsp;</th>
                             </tr>
                         </thead>
                         <tbody>
-                        {% for product in products %}
+                        {% for product in productsNotRelated %}
                             <tr>
                             <td>{{ product.idproduct }}</td>
                             <td>{{ product.desproduct }}</td>
                             <td>
-                                <a href="/admin/categories/{$category.idcategory}/products/{$value.idproduct}/add" class="btn btn-primary btn-xs pull-right"><i class="fa fa-arrow-right"></i> Adicionar</a>
+                                <a href="{{ base_url() }}/admin/categories/{{ category_id }}/products/{{ product.idproduct }}/add" class="button is-success is-small pull-right"><i class="fa fa-plus pr-2"></i> Adicionar</a>
                             </td>
                             </tr>
                         {% endfor %}
@@ -53,29 +51,29 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="column is-half">
             <div class="box box-success">
                 <div class="box-header with-border">
-                <h3 class="box-title">Produtos na Categoria {{ category.descategory }}</h3>
+                <h3 class="box-title">Produtos na Categoria {{ category_name }}</h3>
                 </div>
                 <!-- /.box-header -->
                 <!-- form start -->
-                <div class="card-body">
+                <div class="card">
                     <table class="table table-striped">
                         <thead>
                             <tr>
                             <th style="width: 10px">#</th>
                             <th>Nome do Produto</th>
-                            <th style="width: 240px">&nbsp;</th>
+                            <th style="width: 100px">&nbsp;</th>
                             </tr>
                         </thead>
                         <tbody>
-                        {% for product in products %}
+                        {% for product in productsRelated %}
                             <tr>
-                            <td>{{ product.category.idproduct }}</td>
-                            <td>{{ product.category.desproduct }}</td>
+                            <td>{{ product.idproduct }}</td>
+                            <td>{{ product.desproduct }}</td>
                             <td>
-                                <a href="/admin/categories/{$category.idcategory}/products/{$value.idproduct}/remove" class="btn btn-primary btn-xs pull-right"><i class="fa fa-arrow-left"></i> Remover</a>
+                                <a href="{{ base_url() }}/admin/categories/{{ category_id }}/products/{{ product.idproduct }}/remove" class="button is-danger is-small pull-right"><i class="fa fa-minus pr-2"></i> Remover</a>
                             </td>
                             </tr>
                         {% endfor %}
@@ -88,7 +86,5 @@
 
 </section>
 <!-- /.content -->
-</div>
-<!-- /.content-wrapper -->
 
 {% endblock %}

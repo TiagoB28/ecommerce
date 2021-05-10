@@ -52,5 +52,4 @@ class Auth
 
         return true;
     }
-
 }

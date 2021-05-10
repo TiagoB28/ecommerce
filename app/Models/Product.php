@@ -23,8 +23,9 @@ class Product extends Model
 
     public $timestamps = false;
 
-    public function category()
+    public function categories()
     {
-        return $this->hasMany(ProductCategory::class, 'idproduct', 'idproduct');
+        return $this->belongsToMany(Category::class,
+            'tb_productscategories','idproduct', 'idcategory');
     }
 }

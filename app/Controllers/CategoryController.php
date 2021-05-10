@@ -98,15 +98,45 @@ class CategoryController extends Controller
 
     public function getProductCategory($request, $response, $args)
     {
-        $category = Category::where('idcategory', '=', $args['id'])->first();
-        $products = Product::with('category')->get();
+        $category_name = Category::find($args['id'])->descategory;
+
+        $productsRelated = Product::whereHas('categories', function($q) use ($args) {
+            $q->where('tb_productscategories.idcategory', '=', $args['id']);
+        })->get();
+
+        $productsNotRelated = Product::whereDoesntHave('categories', function($q) use ($args) {
+            $q->where('tb_productscategories.idcategory', '=', $args['id']);
+        })->get();
 
         $data = [
-            'category' => $category,
-            'products' => $products
+            'category_id' => $args['id'],
+            'category_name' => $category_name,
+            'productsRelated' => $productsRelated,
+            'productsNotRelated' => $productsNotRelated
         ];
+
+//        json($data);
 
         return $this->container->view->render($response, 'admin/categories-products.twig', $data);
     }
 
+
+    public function addProductCategory($request, $response, $args)
+    {
+        $category = Category::find($args['id_cart']);
+        $category->products()->syncWithoutDetaching($args['id_product']);
+
+        return $response->withRedirect($this->container->router
+            ->pathFor('admin.categories-products', ['id' => $args['id_cart']]));
+    }
+
+
+    public function removeProductCategory($request, $response, $args)
+    {
+        $category = Category::find($args['id_cart']);
+        $category->products()->detach($args['id_product']);
+
+        return $response->withRedirect($this->container->router
+            ->pathFor('admin.categories-products', ['id' => $args['id_cart']]));
+    }
 }

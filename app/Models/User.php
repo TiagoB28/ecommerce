@@ -22,4 +22,10 @@ class User extends Model
     {
         return $this->belongsTo(Person::class, 'idperson', 'idperson');
     }
+
+
+    public function cart()
+    {
+        return $this->hasOne(Cart::class, 'iduser', 'iduser');
+    }
 }

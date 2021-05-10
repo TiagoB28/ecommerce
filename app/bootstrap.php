@@ -11,19 +11,20 @@ session_start();
 date_default_timezone_set('America/Sao_Paulo');
 
 require __DIR__ . '/./../vendor/autoload.php';
+require __DIR__ . '/../env.php';
 
 $app = new Slim\App([
     'settings' => [
-        'displayErrorDetails' => true,
+        'displayErrorDetails' => getenv('DISPLAY_ERROS_DETAILS'),
         'db' => [
-            'driver' => 'mysql',
-            'host' => '127.0.0.1',
-            'database' => 'db_ecommerce',
-            'username' => 'root',
-            'password' => 'root',
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix'    => '',
+            'driver' => getenv('HCODE_STORE_DRIVER'),
+            'host' => getenv('HCODE_STORE_HOST'),
+            'database' => getenv('HCODE_STORE_DBNAME'),
+            'username' => getenv('HCODE_STORE_USER'),
+            'password' => getenv('HCODE_STORE_PASSWORD'),
+            'charset'   => getenv('HCODE_STORE_CHARSET'),
+            'collation' => getenv('HCODE_STORE_COLLATION'),
+            'prefix'    => getenv('HCODE_STORE_PREFIX'),
         ]
     ]
 ]);
@@ -38,7 +39,6 @@ $capsule = new Illuminate\Database\Capsule\Manager;
 $capsule->addConnection($container['settings']['db']);
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
-
 
 $container['upload_directory'] = "C:/xampp/htdocs/hcode-slim-3/public/images";
 
@@ -64,10 +64,10 @@ $container['view'] = function($container) {
     ]);
     $router = $container->get('router');
     $uri = Uri::createFromEnvironment(new Environment($_SERVER));
-    $twig = new IntlExtension();
 
     $view->addExtension(new Slim\Views\TwigExtension($router, $uri));
     $view->addExtension(new IntlExtension());
+
     $view->getEnvironment()->addGlobal('flash', $container->flash);
 
     $view->getEnvironment()->addGlobal('auth', [
@@ -84,14 +84,14 @@ $container['AuthController'] = function($container) {
 };
 
 /**
- * @param $container -> key =  'HomeController', value = function($container)
+ * @param $container -> key =  'SiteController', value = function($container)
  */
-$container['HomeController'] = function($container) {
-    return new App\Controllers\HomeController($container);
+$container['SiteController'] = function($container) {
+    return new App\Controllers\SiteController($container);
 };
 
-$container['PageAdminController'] = function($container) {
-    return new App\Controllers\PageAdminController($container);
+$container['AdminController'] = function($container) {
+    return new App\Controllers\AdminController($container);
 };
 
 $container['ProductController'] = function($container) {
@@ -107,9 +107,9 @@ $container['CategoryController'] = function($container) {
 require __DIR__ . '/commons.php';
 
 getControllers($container, [
-    'HomeController',
+    'SiteController',
     'AuthController',
-    'PageAdminController',
+    'AdminController',
     'ProductController',
     'CategoryController']);
 
