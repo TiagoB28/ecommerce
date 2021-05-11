@@ -2,9 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Models\Person;
 use App\Models\User;
-use App\Auth;
-use Respect\Validation\Validator as v;
 
 class AuthController extends Controller
 {
@@ -14,7 +13,7 @@ class AuthController extends Controller
             return $this->container->view->render($response, 'admin/login.twig');
 
 
-        if(!$this->container->auth->attempt(
+        if(!$this->container->auth->attemptAdmin(
             $request->getParam('login'),
             $request->getParam('password'))) {
             return $response->withRedirect($this->container->router->pathFor('auth.login'));
@@ -27,9 +26,9 @@ class AuthController extends Controller
     {
         if(isset($_SESSION['user'])) {
             unset($_SESSION['user']);
+            // erro no return
             return $response->withRedirect($this->container->router->pathFor('auth.login'));
         }
-
     }
 
 
@@ -59,5 +58,36 @@ class AuthController extends Controller
         }
 
         return $response->withRedirect($this->container->router->pathFor('auth.login'));
+    }
+
+
+    public function loginSite($request, $response)
+    {
+        $user_name = User::find($_SESSION['user'])->deslogin;
+
+        $data = [
+            'user_name' => $user_name
+        ];
+
+        if($request->isGet())
+            return $this->container->view->render($response, 'site/login.twig');
+
+
+        if(!$this->container->auth->attemptSite(
+            $request->getParam('login'),
+            $request->getParam('password'))) {
+            return $response->withRedirect($this->container->router->pathFor('site.login'));
+        }
+
+        return $response->withRedirect($this->container->router->pathFor('site.home'));
+    }
+
+
+    public function logoutSite($request, $response)
+    {
+        if(isset($_SESSION['user'])) {
+            unset($_SESSION['user']);
+            return $response->withRedirect($this->container->router->pathFor('site.home'));
+        }
     }
 }

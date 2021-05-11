@@ -3,7 +3,11 @@
 use App\Middleware\AuthMiddleware;
 
 $app->group('/site', function ($app) {
-    $app->map(['GET', 'POST'], '/login', 'SiteController:login')->setName('site.login');
+    $app->post('/user-create', 'SiteController:createUserSite')->setName('site.create-user');
+
+    $app->map(['GET', 'POST'], '/login', 'AuthController:loginSite')->setName('site.login');
+    $app->get('/logout', 'AuthController:logoutSite')->setName('site.logout');
+
     $app->get('/home', 'SiteController:home')->setName('site.home');
     $app->get('/category', 'SiteController:getCategoryProducts')->setName('site.category');
     $app->get('/product_detail', 'SiteController:getProductDetail')->setName('site.product-detail');

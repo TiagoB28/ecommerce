@@ -24,7 +24,7 @@
                 <form action="{{ path_for('site.login') }}" id="login-form-wrap" class="login" method="post">
                     <h2>Acessar</h2>
                     <div class="field">
-                        <label class="label" for="login">E-mail <span class="required">*</span></label>
+                        <label class="label" for="login">Login <span class="required">*</span></label>
                         <div class="control">
                             <input type="text" id="login" name="login" class="input">
                         </div>
@@ -67,7 +67,8 @@
                     Error!
                 </div>#}
 
-                <form id="register-form-wrap" action="/register" class="register" method="post">
+
+                <form id="register-form-wrap" action="{{ path_for('site.create-user') }}" class="register" method="post">
                     <h2>Criar conta</h2>
 
                     <div class="field">
@@ -87,7 +88,7 @@
                     <div class="field">
                         <label class="label" for="phone">Telefone</label>
                         <div class="control">
-                            <input type="text" id="phone" name="phone" class="input-text" value="">
+                            <input type="text" id="phone" name="phone" class="input-text" value="" placeholder="(xx)xxxx-xxxx">
                         </div>
                     </div>
 

@@ -2,42 +2,63 @@
 
 namespace App\Controllers;
 
-use App\Models\{
-    Category,
-    Product,
-    User,
-    Cart
-};
-
-use Illuminate\Support\Facades\Session;
+use App\Models\{Category, Person, Product, User, Cart};
 use Respect\Validation\Validator as v;
-
 
 class SiteController extends Controller
 {
+
     public function home($request, $response)
     {
+        if ($_SESSION['user'] > 0) {
+            $user_name = User::find($_SESSION['user'])->deslogin;
+        } else {
+            $user_name = null;
+        }
         $categories = Category::all();
         $products = Product::all();
 
+//        json($_SESSION['user']);
+
         $data = [
+            'user' => $_SESSION['user'],
+            'user_name' => $user_name,
             'categories' => $categories,
-            'products' => $products,
+            'products' => $products
         ];
 
         return $this->container->view->render($response, 'site/home.twig', $data);
     }
 
-
-    public function login($request, $response)
+    public function createUserSite($request, $response)
     {
-        if($request->isGet())
-            return $this->container->view->render($response, 'site/login.twig');
+        $validation = $this->container->validator->validate($request,[
+            'desperson' =>  v::notEmpty()->alpha()->length(5),
+            'deslogin' =>  v::notEmpty()->noWhitespace()->email(),
+            'nrphone' => v::notEmpty()->noWhitespace()->regex("/^\(\d{2}\)\d{4}-\d{4}$/"),
+            'desemail' => v::notEmpty()->noWhitespace()->email(),
+            'despassword' => v::notEmpty()->noWhitespace()
+        ]);
+
+        if($validation->failed())
+            $response->withRedirect($this->container->router->pathFor('site.login'));
 
 
-
-
+        Person::create([
+            'desperson' => $request->getParam('name'),
+            'desemail' => $request->getParam('email'),
+            'nrphone' => $request->getParam('phone')
+        ])
+            ->user()
+            ->create([
+                'deslogin' => $request->getParam('email'),
+                'despassword' => password_hash($request->getParam('password'), PASSWORD_DEFAULT),
+                'inadmin' => 0
+            ]);
+        $this->container->flash->addMessage('success', 'Conta Criada.');
+        return $response->withRedirect($this->container->router->pathFor('site.login'));
     }
+
 
     public function getCategoryProducts($request, $response)
     {

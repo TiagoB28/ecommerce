@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Models\Category;
 use App\Models\Person;
 use App\Models\User;
 use Respect\Validation\Validator as v;

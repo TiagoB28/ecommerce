@@ -13,6 +13,7 @@ class Auth
         $this->container = $container;
     }
 
+
     /**
      * Verifica se a sessão existe e, se existi, ela procura o id do usuário e retorna
      * todos os dados do usuário.
@@ -24,6 +25,7 @@ class Auth
             return User::find($_SESSION['user']);
     }
 
+
     /**
      * Verifica se a sessão existe.
      * @return bool
@@ -33,13 +35,36 @@ class Auth
         return isset($_SESSION['user']);
     }
 
+
     /**
-     * Função que avalia a tentativa de login do usuário.
+     * Função que avalia a tentativa de login do usuário na administração.
      * @param string $login
      * @param string $password
      * @return bool
      */
-    public function attempt(string $login, string $password)
+    public function attemptAdmin(string $login, string $password)
+    {
+        $user = User::where('deslogin', $login)->first();
+        $user_admin = $user->inadmin;
+
+        if (!$user || !password_verify($password, $user->despassword) || !$user_admin) {
+            $this->container->flash->addMessage('error', 'Suas credencias estão erradas');
+            return false;
+        }
+
+       $_SESSION['user'] = $user->iduser;
+
+        return true;
+    }
+
+
+    /**
+     * Função que avalia a tentativa de login do usuário no site.
+     * @param string $login
+     * @param string $password
+     * @return bool
+     */
+    public function attemptSite(string $login, string $password)
     {
         $user = User::where('deslogin', $login)->first();
 
@@ -48,7 +73,7 @@ class Auth
             return false;
         }
 
-       $_SESSION['user'] = $user->iduser;
+        $_SESSION['user'] = $user->iduser;
 
         return true;
     }
