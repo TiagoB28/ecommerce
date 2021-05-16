@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'b95f32c0ad17d315b5db59eaa9d6d0886e59229d',
+    'reference' => '8a23ca9e39e829da5241ec560cffe72847f8cc39',
     'name' => 'tiagob28/ecommerce',
   ),
   'versions' => 
@@ -72,12 +72,21 @@ private static $installed = array (
     ),
     'illuminate/database' => 
     array (
+      'pretty_version' => 'v5.8.18',
+      'version' => '5.8.18.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '421138e05c149e2e82edb0a6a86dca59a79a65a0',
+    ),
+    'illuminate/pagination' => 
+    array (
       'pretty_version' => 'v5.8.36',
       'version' => '5.8.36.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ac9ae2d82b8a6137400f17b3eea258be3518daa9',
+      'reference' => '391134bc87a47b3dfe5cf60df73e5e0080aec220',
     ),
     'illuminate/support' => 
     array (
@@ -88,14 +97,23 @@ private static $installed = array (
       ),
       'reference' => 'df4af6a32908f1d89d74348624b57e3233eea247',
     ),
-    'nesbot/carbon' => 
+    'monolog/monolog' => 
     array (
-      'pretty_version' => '2.46.0',
-      'version' => '2.46.0.0',
+      'pretty_version' => '2.2.0',
+      'version' => '2.2.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '2fd2c4a77d58a4e95234c8a61c5df1f157a91bf4',
+      'reference' => '1cb1cde8e8dd0f70cc0fe51354a59acad9302084',
+    ),
+    'nesbot/carbon' => 
+    array (
+      'pretty_version' => '2.48.0',
+      'version' => '2.48.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'd3c447f21072766cddec3522f9468a5849a76147',
     ),
     'nikic/fast-route' => 
     array (
@@ -235,7 +253,8 @@ private static $installed = array (
     array (
       'provided' => 
       array (
-        0 => '1.0',
+        0 => '1.0.0',
+        1 => '1.0',
       ),
     ),
     'psr/simple-cache' => 
@@ -307,15 +326,6 @@ private static $installed = array (
       array (
       ),
       'reference' => 'ffced0d2c8fa8e6cdc4d695a743271fab6c38625',
-    ),
-    'symfony/asset' => 
-    array (
-      'pretty_version' => 'v5.2.7',
-      'version' => '5.2.7.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'e6676acfabf011dca2beaa5f9b8d519c8aea2870',
     ),
     'symfony/cache' => 
     array (
@@ -538,12 +548,12 @@ private static $installed = array (
     ),
     'symfony/translation' => 
     array (
-      'pretty_version' => 'v5.2.6',
-      'version' => '5.2.6.0',
+      'pretty_version' => 'v5.2.8',
+      'version' => '5.2.8.0',
       'aliases' => 
       array (
       ),
-      'reference' => '2cc7f45d96db9adfcf89adf4401d9dfed509f4e1',
+      'reference' => '445caa74a5986f1cc9dd91a2975ef68fa7cb2068',
     ),
     'symfony/translation-contracts' => 
     array (
@@ -604,7 +614,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'b95f32c0ad17d315b5db59eaa9d6d0886e59229d',
+      'reference' => '8a23ca9e39e829da5241ec560cffe72847f8cc39',
     ),
     'tuupola/callable-handler' => 
     array (

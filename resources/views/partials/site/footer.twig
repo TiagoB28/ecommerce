@@ -30,7 +30,7 @@
                     <h2 class="footer-wid-title">Categorias</h2>
                     {% for category in categories %}
                     <ul>
-                        <li><a href="/hcode-slim-3/public/site/category?id={{ category.idcategory }}">{{ category.descategory }}</a></li>
+                        <li><a href="{{ base_url() }}/site/category?id={{ category.idcategory }}">{{ category.descategory }}</a></li>
                     </ul>
                     {% endfor %}
                 </div>
@@ -41,9 +41,17 @@
                     <h2 class="footer-wid-title">Newsletter</h2>
                     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis sunt id doloribus!</p>
                     <div class="newsletter-form">
-                        <form action="#">
-                            <input type="email" placeholder="Type your email">
-                            <input type="submit" value="Subscribe">
+                        <form action="#" method="post">
+                            <div class="field">
+                                <div class="control">
+                                    <input class="input" type="email" placeholder="Type your email">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="control">
+                                    <button class="button is-primary" type="submit">Subscribe</button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>

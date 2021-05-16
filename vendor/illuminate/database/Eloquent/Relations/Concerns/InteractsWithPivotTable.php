@@ -220,12 +220,12 @@ trait InteractsWithPivotTable
      */
     protected function updateExistingPivotUsingCustomClass($id, array $attributes, $touch)
     {
-        $pivot = $this->getCurrentlyAttachedPivots()
+        $updated = $this->getCurrentlyAttachedPivots()
                     ->where($this->foreignPivotKey, $this->parent->{$this->parentKey})
                     ->where($this->relatedPivotKey, $this->parseId($id))
-                    ->first();
-
-        $updated = $pivot ? $pivot->fill($attributes)->isDirty() : false;
+                    ->first()
+                    ->fill($attributes)
+                    ->isDirty();
 
         $this->newPivot([
             $this->foreignPivotKey => $this->parent->{$this->parentKey},
@@ -403,7 +403,7 @@ trait InteractsWithPivotTable
      * @param  string  $column
      * @return bool
      */
-    public function hasPivotColumn($column)
+    protected function hasPivotColumn($column)
     {
         return in_array($column, $this->pivotColumns);
     }

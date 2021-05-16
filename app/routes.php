@@ -3,17 +3,20 @@
 use App\Middleware\AuthMiddleware;
 
 $app->group('/site', function ($app) {
-    $app->post('/user-create', 'SiteController:createUserSite')->setName('site.create-user');
-
     $app->map(['GET', 'POST'], '/login', 'AuthController:loginSite')->setName('site.login');
     $app->get('/logout', 'AuthController:logoutSite')->setName('site.logout');
 
+    $app->post('/user-create', 'SiteController:createUserSite')->setName('site.create-user');
+
     $app->get('/home', 'SiteController:home')->setName('site.home');
+
     $app->get('/category', 'SiteController:getCategoryProducts')->setName('site.category');
+
     $app->get('/product_detail', 'SiteController:getProductDetail')->setName('site.product-detail');
 
     $app->get('/cart', 'SiteController:getCartSession')->setName('site.cart');
 });
+
 
 $app->group('/admin', function ($app) {
     $app->get('/home', 'AdminController:index')->setName('admin.home');
@@ -27,11 +30,11 @@ $app->group('/admin', function ($app) {
     $app->map(['GET', 'POST'], '/category/update/{id}', 'CategoryController:updateCategory')->setName('admin.category-update');
     $app->get('/category/delete', 'CategoryController:deleteCategory');
 
-    $app->get('/categories/products/{id}', 'CategoryController:getProductCategory')->setName('admin.categories-products');
 
     /**
      * Products VS Categories
      */
+    $app->get('/categories/products/{id}', 'CategoryController:getProductCategory')->setName('admin.categories-products');
     $app->get('/categories/{id_cart}/products/{id_product}/add', 'CategoryController:addProductCategory')->setName('admin.categories-add');
     $app->get('/categories/{id_cart}/products/{id_product}/remove', 'CategoryController:removeProductCategory')->setName('admin.categories-remove');
 

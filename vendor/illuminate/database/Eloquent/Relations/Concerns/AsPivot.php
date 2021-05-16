@@ -203,7 +203,7 @@ trait AsPivot
     /**
      * Determine if the pivot model or given attributes has timestamp attributes.
      *
-     * @param  array|null  $attributes
+     * @param  $attributes  array|null
      * @return bool
      */
     public function hasTimestampAttributes($attributes = null)
@@ -256,7 +256,7 @@ trait AsPivot
     /**
      * Get a new query to restore one or more models by their queueable IDs.
      *
-     * @param  int[]|string[]|string  $ids
+     * @param  array<int>  $ids
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function newQueryForRestoration($ids)
@@ -279,7 +279,7 @@ trait AsPivot
     /**
      * Get a new query to restore multiple models by their queueable IDs.
      *
-     * @param  int[]|string[]  $ids
+     * @param  array|int  $ids
      * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function newQueryForCollectionRestoration(array $ids)

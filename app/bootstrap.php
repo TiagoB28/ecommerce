@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Slim\Http\{
     Environment,
     Uri
@@ -30,8 +31,8 @@ $app = new Slim\App([
 ]);
 
 /**
+ * Container Pimple
  * Instância o container.
- * Um container no slim é um array.
  */
 $container = $app->getContainer();
 
@@ -41,6 +42,21 @@ $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
 $container['upload_directory'] = "C:/xampp/htdocs/hcode-slim-3/public/images";
+
+/**
+ * Serviço de Logging em Arquivo
+ */
+$container['logger'] = function($container) {
+    $logger = new Monolog\Logger('books-microservice');
+    $logfile = __DIR__ . '/../logs/hcode.log';
+    $stream = new Monolog\Handler\StreamHandler($logfile, Monolog\Logger::DEBUG);
+    $fingersCrossed = new Monolog\Handler\FingersCrossedHandler(
+        $stream, Monolog\Logger::INFO);
+    $logger->pushHandler($fingersCrossed);
+
+    return $logger;
+};
+
 
 $container['validator'] = function($container) {
     return new App\Validation\Validator;
@@ -69,6 +85,10 @@ $container['view'] = function($container) {
     $view->addExtension(new IntlExtension());
 
     $view->getEnvironment()->addGlobal('flash', $container->flash);
+
+    $user_name = User::find($_SESSION['user'])->deslogin;
+
+    $view->getEnvironment()->addGlobal('user_name', $user_name );
 
     $view->getEnvironment()->addGlobal('auth', [
         'check' => $container->auth->check(),

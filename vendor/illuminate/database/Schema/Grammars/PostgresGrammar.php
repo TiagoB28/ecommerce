@@ -19,7 +19,7 @@ class PostgresGrammar extends Grammar
      *
      * @var array
      */
-    protected $modifiers = ['Collate', 'Increment', 'Nullable', 'Default'];
+    protected $modifiers = ['Increment', 'Nullable', 'Default'];
 
     /**
      * The columns available as serials.
@@ -200,7 +200,7 @@ class PostgresGrammar extends Grammar
     /**
      * Compile the SQL needed to drop all tables.
      *
-     * @param  array  $tables
+     * @param  string  $tables
      * @return string
      */
     public function compileDropAllTables($tables)
@@ -211,7 +211,7 @@ class PostgresGrammar extends Grammar
     /**
      * Compile the SQL needed to drop all views.
      *
-     * @param  array  $views
+     * @param  string  $views
      * @return string
      */
     public function compileDropAllViews($views)
@@ -869,17 +869,6 @@ class PostgresGrammar extends Grammar
     }
 
     /**
-     * Create the column definition for a spatial MultiPolygonZ type.
-     *
-     * @param  \Illuminate\Support\Fluent  $column
-     * @return string
-     */
-    protected function typeMultiPolygonZ(Fluent $column)
-    {
-        return $this->formatPostGisType('multipolygonz');
-    }
-
-    /**
      * Format the column definition for a PostGIS spatial type.
      *
      * @param  string  $type
@@ -888,20 +877,6 @@ class PostgresGrammar extends Grammar
     private function formatPostGisType(string $type)
     {
         return "geography($type, 4326)";
-    }
-
-    /**
-     * Get the SQL for a collation column modifier.
-     *
-     * @param  \Illuminate\Database\Schema\Blueprint  $blueprint
-     * @param  \Illuminate\Support\Fluent  $column
-     * @return string|null
-     */
-    protected function modifyCollate(Blueprint $blueprint, Fluent $column)
-    {
-        if (! is_null($column->collation)) {
-            return ' collate '.$this->wrapValue($column->collation);
-        }
     }
 
     /**

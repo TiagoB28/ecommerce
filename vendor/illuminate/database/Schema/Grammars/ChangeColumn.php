@@ -121,7 +121,7 @@ class ChangeColumn
             $options['length'] = static::calculateDoctrineTextLength($fluent['type']);
         }
 
-        if (in_array($fluent['type'], ['json', 'binary'])) {
+        if ($fluent['type'] === 'json') {
             $options['customSchemaOptions'] = [
                 'collation' => '',
             ];

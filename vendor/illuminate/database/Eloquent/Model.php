@@ -31,7 +31,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * The connection name for the model.
      *
-     * @var string|null
+     * @var string
      */
     protected $connection;
 
@@ -293,10 +293,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     public static function isIgnoringTouch($class = null)
     {
         $class = $class ?: static::class;
-
-        if (! get_class_vars($class)['timestamps'] || ! $class::UPDATED_AT) {
-            return true;
-        }
 
         foreach (static::$ignoreOnTouch as $ignoredClass) {
             if ($class === $ignoredClass || is_subclass_of($class, $ignoredClass)) {
@@ -1222,7 +1218,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Get the current connection name for the model.
      *
-     * @return string|null
+     * @return string
      */
     public function getConnectionName()
     {
@@ -1232,7 +1228,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Set the connection associated with the model.
      *
-     * @param  string|null  $name
+     * @param  string  $name
      * @return $this
      */
     public function setConnection($name)
@@ -1441,7 +1437,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Get the queueable connection for the entity.
      *
-     * @return string|null
+     * @return mixed
      */
     public function getQueueableConnection()
     {

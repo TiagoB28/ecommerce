@@ -182,7 +182,7 @@ class Builder
         '=', '<', '>', '<=', '>=', '<>', '!=', '<=>',
         'like', 'like binary', 'not like', 'ilike',
         '&', '|', '^', '<<', '>>',
-        'rlike', 'not rlike', 'regexp', 'not regexp',
+        'rlike', 'regexp', 'not regexp',
         '~', '~*', '!~', '!~*', 'similar to',
         'not similar to', 'not ilike', '~~*', '!~~*',
     ];
@@ -996,18 +996,16 @@ class Builder
     /**
      * Add a "where null" clause to the query.
      *
-     * @param  string|array  $columns
+     * @param  string  $column
      * @param  string  $boolean
      * @param  bool    $not
      * @return $this
      */
-    public function whereNull($columns, $boolean = 'and', $not = false)
+    public function whereNull($column, $boolean = 'and', $not = false)
     {
         $type = $not ? 'NotNull' : 'Null';
 
-        foreach (Arr::wrap($columns) as $column) {
-            $this->wheres[] = compact('type', 'column', 'boolean');
-        }
+        $this->wheres[] = compact('type', 'column', 'boolean');
 
         return $this;
     }
@@ -1108,7 +1106,7 @@ class Builder
      *
      * @param  string  $column
      * @param  string  $operator
-     * @param  \DateTimeInterface|string|null  $value
+     * @param  \DateTimeInterface|string  $value
      * @param  string  $boolean
      * @return \Illuminate\Database\Query\Builder|static
      */
@@ -1130,7 +1128,7 @@ class Builder
      *
      * @param  string  $column
      * @param  string  $operator
-     * @param  \DateTimeInterface|string|null  $value
+     * @param  \DateTimeInterface|string  $value
      * @return \Illuminate\Database\Query\Builder|static
      */
     public function orWhereDate($column, $operator, $value = null)
@@ -1147,7 +1145,7 @@ class Builder
      *
      * @param  string  $column
      * @param  string   $operator
-     * @param  \DateTimeInterface|string|null  $value
+     * @param  \DateTimeInterface|string  $value
      * @param  string   $boolean
      * @return \Illuminate\Database\Query\Builder|static
      */
@@ -1169,7 +1167,7 @@ class Builder
      *
      * @param  string  $column
      * @param  string   $operator
-     * @param  \DateTimeInterface|string|null  $value
+     * @param  \DateTimeInterface|string  $value
      * @return \Illuminate\Database\Query\Builder|static
      */
     public function orWhereTime($column, $operator, $value = null)
@@ -1186,7 +1184,7 @@ class Builder
      *
      * @param  string  $column
      * @param  string  $operator
-     * @param  \DateTimeInterface|string|null  $value
+     * @param  \DateTimeInterface|string  $value
      * @param  string  $boolean
      * @return \Illuminate\Database\Query\Builder|static
      */
@@ -1200,9 +1198,7 @@ class Builder
             $value = $value->format('d');
         }
 
-        if (! $value instanceof Expression) {
-            $value = str_pad($value, 2, '0', STR_PAD_LEFT);
-        }
+        $value = str_pad($value, 2, '0', STR_PAD_LEFT);
 
         return $this->addDateBasedWhere('Day', $column, $operator, $value, $boolean);
     }
@@ -1212,7 +1208,7 @@ class Builder
      *
      * @param  string  $column
      * @param  string  $operator
-     * @param  \DateTimeInterface|string|null  $value
+     * @param  \DateTimeInterface|string  $value
      * @return \Illuminate\Database\Query\Builder|static
      */
     public function orWhereDay($column, $operator, $value = null)
@@ -1221,7 +1217,7 @@ class Builder
             $value, $operator, func_num_args() === 2
         );
 
-        return $this->whereDay($column, $operator, $value, 'or');
+        return $this->addDateBasedWhere('Day', $column, $operator, $value, 'or');
     }
 
     /**
@@ -1229,7 +1225,7 @@ class Builder
      *
      * @param  string  $column
      * @param  string  $operator
-     * @param  \DateTimeInterface|string|null  $value
+     * @param  \DateTimeInterface|string  $value
      * @param  string  $boolean
      * @return \Illuminate\Database\Query\Builder|static
      */
@@ -1243,9 +1239,7 @@ class Builder
             $value = $value->format('m');
         }
 
-        if (! $value instanceof Expression) {
-            $value = str_pad($value, 2, '0', STR_PAD_LEFT);
-        }
+        $value = str_pad($value, 2, '0', STR_PAD_LEFT);
 
         return $this->addDateBasedWhere('Month', $column, $operator, $value, $boolean);
     }
@@ -1255,7 +1249,7 @@ class Builder
      *
      * @param  string  $column
      * @param  string  $operator
-     * @param  \DateTimeInterface|string|null  $value
+     * @param  \DateTimeInterface|string  $value
      * @return \Illuminate\Database\Query\Builder|static
      */
     public function orWhereMonth($column, $operator, $value = null)
@@ -1264,7 +1258,7 @@ class Builder
             $value, $operator, func_num_args() === 2
         );
 
-        return $this->whereMonth($column, $operator, $value, 'or');
+        return $this->addDateBasedWhere('Month', $column, $operator, $value, 'or');
     }
 
     /**
@@ -1272,7 +1266,7 @@ class Builder
      *
      * @param  string  $column
      * @param  string  $operator
-     * @param  \DateTimeInterface|string|int|null  $value
+     * @param  \DateTimeInterface|string|int  $value
      * @param  string  $boolean
      * @return \Illuminate\Database\Query\Builder|static
      */
@@ -1294,7 +1288,7 @@ class Builder
      *
      * @param  string  $column
      * @param  string  $operator
-     * @param  \DateTimeInterface|string|int|null  $value
+     * @param  \DateTimeInterface|string|int  $value
      * @return \Illuminate\Database\Query\Builder|static
      */
     public function orWhereYear($column, $operator, $value = null)
@@ -1303,7 +1297,7 @@ class Builder
             $value, $operator, func_num_args() === 2
         );
 
-        return $this->whereYear($column, $operator, $value, 'or');
+        return $this->addDateBasedWhere('Year', $column, $operator, $value, 'or');
     }
 
     /**
@@ -1615,7 +1609,7 @@ class Builder
      * Handles dynamic "where" clauses to the query.
      *
      * @param  string  $method
-     * @param  array  $parameters
+     * @param  string  $parameters
      * @return $this
      */
     public function dynamicWhere($method, $parameters)
@@ -2144,7 +2138,7 @@ class Builder
     {
         $page = $page ?: Paginator::resolveCurrentPage($pageName);
 
-        $total = $this->getCountForPagination();
+        $total = $this->getCountForPagination($columns);
 
         $results = $total ? $this->forPage($page, $perPage)->get($columns) : collect();
 
@@ -2648,33 +2642,6 @@ class Builder
     }
 
     /**
-     * Insert a new record into the database while ignoring errors.
-     *
-     * @param  array  $values
-     * @return int
-     */
-    public function insertOrIgnore(array $values)
-    {
-        if (empty($values)) {
-            return 0;
-        }
-
-        if (! is_array(reset($values))) {
-            $values = [$values];
-        } else {
-            foreach ($values as $key => $value) {
-                ksort($value);
-                $values[$key] = $value;
-            }
-        }
-
-        return $this->connection->affectingStatement(
-            $this->grammar->compileInsertOrIgnore($this, $values),
-            $this->cleanBindings(Arr::flatten($values, 1))
-        );
-    }
-
-    /**
      * Insert a new record and get the value of the primary key.
      *
      * @param  array  $values
@@ -3014,13 +2981,11 @@ class Builder
     /**
      * Dump the current SQL and bindings.
      *
-     * @return $this
+     * @return void
      */
     public function dump()
     {
         dump($this->toSql(), $this->getBindings());
-
-        return $this;
     }
 
     /**

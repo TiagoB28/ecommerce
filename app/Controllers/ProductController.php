@@ -28,10 +28,11 @@ class ProductController extends Controller
         $directory = $this->container->get('upload_directory');
 
         $files = $request->getUploadedFiles();
+
         $newFile = $files['desphoto'];
 
 
-        $extension = pathinfo($newFile->getClientFilename(), PATHINFO_EXTENSION);
+        $extension = $newFile->getClientFilename();
         $uploadedFileName = bin2hex(random_bytes(5));
 
         $upload = sprintf('%s.%0.8s', $uploadedFileName, $extension);

@@ -196,18 +196,6 @@ class PostgresGrammar extends Grammar
     }
 
     /**
-     * Compile an insert ignore statement into SQL.
-     *
-     * @param  \Illuminate\Database\Query\Builder  $query
-     * @param  array  $values
-     * @return string
-     */
-    public function compileInsertOrIgnore(Builder $query, array $values)
-    {
-        return $this->compileInsert($query, $values).' on conflict do nothing';
-    }
-
-    /**
      * Compile an insert and get ID statement into SQL.
      *
      * @param  \Illuminate\Database\Query\Builder  $query
@@ -217,7 +205,11 @@ class PostgresGrammar extends Grammar
      */
     public function compileInsertGetId(Builder $query, $values, $sequence)
     {
-        return $this->compileInsert($query, $values).' returning '.$this->wrap($sequence ?: 'id');
+        if (is_null($sequence)) {
+            $sequence = 'id';
+        }
+
+        return $this->compileInsert($query, $values).' returning '.$this->wrap($sequence);
     }
 
     /**
@@ -255,8 +247,8 @@ class PostgresGrammar extends Grammar
         // When gathering the columns for an update statement, we'll wrap each of the
         // columns and convert it to a parameter value. Then we will concatenate a
         // list of the columns that can be added into this update query clauses.
-        return collect($values)->map(function ($value, $key) {
-            $column = last(explode('.', $key));
+        return collect($values)->map(function ($value, $key) use ($query) {
+            $column = Str::after($key, $query->from.'.');
 
             if ($this->isJsonSelector($key)) {
                 return $this->compileJsonUpdateColumn($column, $value);
@@ -373,10 +365,13 @@ class PostgresGrammar extends Grammar
                 : $value;
         })->all();
 
-        $bindingsWithoutWhere = Arr::except($bindings, ['select', 'where']);
+        // Update statements with "joins" in Postgres use an interesting syntax. We need to
+        // take all of the bindings and put them on the end of this array since they are
+        // added to the end of the "where" clause statements as typical where clauses.
+        $bindingsWithoutJoin = Arr::except($bindings, 'join');
 
         return array_values(
-            array_merge($values, $bindings['where'], Arr::flatten($bindingsWithoutWhere))
+            array_merge($values, $bindings['join'], Arr::flatten($bindingsWithoutJoin))
         );
     }
 
@@ -408,24 +403,9 @@ class PostgresGrammar extends Grammar
             return $this->wrapTable($join->table);
         })->implode(', ');
 
-        $where = $this->compileUpdateWheres($query);
+        $where = count($query->wheres) > 0 ? ' '.$this->compileUpdateWheres($query) : '';
 
-        return trim("delete from {$table}{$using} {$where}");
-    }
-
-    /**
-     * Prepare the bindings for a delete statement.
-     *
-     * @param  array  $bindings
-     * @return array
-     */
-    public function prepareBindingsForDelete(array $bindings)
-    {
-        $bindingsWithoutWhere = Arr::except($bindings, ['select', 'where']);
-
-        return array_values(
-            array_merge($bindings['where'], Arr::flatten($bindingsWithoutWhere))
-        );
+        return trim("delete from {$table}{$using}{$where}");
     }
 
     /**

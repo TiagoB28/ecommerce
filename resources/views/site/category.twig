@@ -6,9 +6,9 @@
 
 <div class="product-big-title-area">
     <div class="container">
-        <div class="row">
+        <div class="columns">
 
-            <div class="col-md-12">
+            <div class="column is-full">
                 <div class="product-bit-title text-center">
                     <h2>{{ category.descategory }}</h2>
                 </div>
@@ -20,18 +20,24 @@
 <div class="single-product-area">
     <div class="zigzag-bottom"></div>
     <div class="container">
-        <div class="row">
 
-            {% for product in products %}
-            <div class="col-md-3 col-sm-6">
+        <div class="columns is-multiline">
+            {% for product in productsRelated %}
+            <div class="column is-one-quarter">
                 <div class="single-shop-product">
-                    <div class="product-upper">
-                        <img src="/res/site/img/product-2.jpg" alt="">
+                    <div class="content">
+                        <div class="card-image">
+                            <figure class="image is-4by3">
+                                <img src="{{ base_url()}}/images/{{ product.desimage }}.png" alt="">
+                            </figure>
+                        </div>
+                    <h2><a href="">{{ product.desproduct }}</a></h2>
                     </div>
-                    <h2><a href="">Apple new mac book 2015 March :P</a></h2>
-                    <div class="product-carousel-price">
-                        <ins>$899.00</ins>
-                    </div>  
+                    <div class="content">
+                        <div class="product-carousel-price">
+                            <ins>{{ product.vlprice | format_currency('BRL') }}</ins>
+                        </div>
+                    </div>
                     
                     <div class="product-option-shop">
                         <a class="add_to_cart_button" data-quantity="1" data-product_sku="" data-product_id="70" rel="nofollow" href="/canvas/shop/?add-to-cart=70">Add to cart</a>
@@ -39,35 +45,35 @@
                 </div>
             </div>
             {% endfor %}
-
         </div>
-        
-        <div class="row">
-            <div class="col-md-12">
-                <div class="product-pagination text-center">
-                    <nav>
-                        <ul class="pagination">
-                        <li>
-                            <a href="#" aria-label="Previous">
-                            <span aria-hidden="true">«</span>
-                            </a>
+
+
+        <div class="columns">
+            <div class="column is-full">
+                <nav class="pagination" role="navigation" aria-label="pagination">
+
+                    <a class="pagination-previous" title="This is the first page" {{ productsRelated.currentPage() == (1) ? 'disabled' : '' }}>
+                        Previous
+                    </a>
+                    <a href="{{ base_url() }}/site/category?id={{ id }}{{ productsRelated.url(productsRelated.currentPage() + 1) }}"
+                       class="pagination-next" {{ (productsRelated.currentPage() == productsRelated.lastPage()) ? ' disabled' : '' }}>
+                        Next page
+                    </a>
+
+                    <ul class="pagination-list">
+                        {% for i in 1..productsRelated.lastPage() %}
+                         <li>
+                            <a href="{{ base_url() }}/site/category?id={{ id }}&page={{ i }}"
+                               class="pagination-link {{ productsRelated.currentPage() == (i)  ? ' is-current' : '' }}"
+                               aria-label="Page 1" aria-current="page">{{ i }}</a>
                         </li>
-                        <li><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li>
-                            <a href="#" aria-label="Next">
-                            <span aria-hidden="true">»</span>
-                            </a>
-                        </li>
-                        </ul>
-                    </nav>                        
-                </div>
+                        {% endfor %}
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
 </div>
 
 {% endblock %}
+

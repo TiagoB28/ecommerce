@@ -372,7 +372,9 @@ trait HasAttributes
      */
     protected function getAttributeFromArray($key)
     {
-        return $this->attributes[$key] ?? null;
+        if (isset($this->attributes[$key])) {
+            return $this->attributes[$key];
+        }
     }
 
     /**
@@ -411,12 +413,6 @@ trait HasAttributes
         $relation = $this->$method();
 
         if (! $relation instanceof Relation) {
-            if (is_null($relation)) {
-                throw new LogicException(sprintf(
-                    '%s::%s must return a relationship instance, but "null" was returned. Was the "return" keyword used?', static::class, $method
-                ));
-            }
-
             throw new LogicException(sprintf(
                 '%s::%s must return a relationship instance.', static::class, $method
             ));
@@ -623,7 +619,7 @@ trait HasAttributes
      */
     protected function isDateAttribute($key)
     {
-        return in_array($key, $this->getDates(), true) ||
+        return in_array($key, $this->getDates()) ||
                                     $this->isDateCastable($key);
     }
 

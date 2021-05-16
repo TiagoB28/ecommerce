@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\{Category, Person, Product, User, Cart};
 use Respect\Validation\Validator as v;
+use Illuminate\Pagination\Paginator;
 
 class SiteController extends Controller
 {
@@ -15,6 +16,7 @@ class SiteController extends Controller
         } else {
             $user_name = null;
         }
+
         $categories = Category::all();
         $products = Product::all();
 
@@ -30,17 +32,18 @@ class SiteController extends Controller
         return $this->container->view->render($response, 'site/home.twig', $data);
     }
 
+
     public function createUserSite($request, $response)
     {
-        $validation = $this->container->validator->validate($request,[
-            'desperson' =>  v::notEmpty()->alpha()->length(5),
-            'deslogin' =>  v::notEmpty()->noWhitespace()->email(),
+        $validation = $this->container->validator->validate($request, [
+            'desperson' => v::notEmpty()->alpha()->length(5),
+            'deslogin' => v::notEmpty()->noWhitespace()->email(),
             'nrphone' => v::notEmpty()->noWhitespace()->regex("/^\(\d{2}\)\d{4}-\d{4}$/"),
             'desemail' => v::notEmpty()->noWhitespace()->email(),
             'despassword' => v::notEmpty()->noWhitespace()
         ]);
 
-        if($validation->failed())
+        if ($validation->failed())
             $response->withRedirect($this->container->router->pathFor('site.login'));
 
 
@@ -60,14 +63,36 @@ class SiteController extends Controller
     }
 
 
-    public function getCategoryProducts($request, $response)
+    public function getCategoryProducts($request, $response, $args)
     {
-        $category = Category::find($request->getParam('id'));
-        $products = Product::find($request->getParam('id'));
+        $id = $request->getParam('id');
+
+        $category = Category::find($id);
+        $categories = Category::all();
+
+        $productsRelated = Product::query()
+            ->whereHas('categories', function ($q) use ($id, $args) {
+            $q->where('tb_productscategories.idcategory', '=', $id);
+        })->paginate(5);
+
+//        $productsRelated->setPath("/public/site/category?id=$id");
+
+        $numberOfPages = $productsRelated->lastPage();  // retorna o número da última página
+        $nextPageUrl = $productsRelated->nextPageUrl();  // "hcode-slim-3/public/site/category?id=2&page=2"
+        $itemsPerPage = $productsRelated->items();  // pega os items da página
+        $onFirstPage = $productsRelated->onFirstPage(); // retorna true se for a primeira página
+
+
+//        json($productsRelated);
 
         $data = [
+            'id' => $id,
+            'categories' => $categories,
             'category' => $category,
-            'products' => $products,
+            'productsRelated' => $productsRelated,
+            'numberOfPages' => $numberOfPages,
+            'nextPageUrl' => $nextPageUrl,
+            'onFirstPage' => $onFirstPage
         ];
 
         return $this->container->view->render($response, 'site/category.twig', $data);
@@ -77,38 +102,14 @@ class SiteController extends Controller
     public function getProductDetail($request, $response)
     {
         $product = Product::find($request->getParam('id'));
+        $category = Category::find($request->getParam('id'));
 
         $data = [
             'product' => $product,
+            'category' => $category
         ];
 
         return $this->container->view->render($response, 'site/product-detail.twig', $data);
     }
 
-
-    public function getCartSession($request, $response, $args)
-    {
-        /*$cart = Cart::all();
-        json($cart);*/
-
-        /**
-         * Se a sessão existe e o idcart for maior que 0, significa que o carrinho já
-         * foi inserido no banco e que ele já está na sessão.
-         */
-        /*if (isset($_SESSION[Cart::SESSION]) && (int)$_SESSION[Cart::SESSION]['idcart'] > 0) {
-            $cart = Cart::where('idcart', '=');
-        } else {
-            # code
-        }*/
-
-
-
-        return $this->container->view->render($response, 'site/cart.twig');
-    }
-
-    public function getCart(int $idcart)
-    {
-        $cart = Cart::where('idcart', '=', $idcart)->first();
-        return $cart;
-    }
 }
