@@ -396,22 +396,21 @@ z-index: 999;}
   width: 100%;transition: .4s;
 }
 .product-hover a {
-    background: none repeat scroll 0 0 #e67e22;
-    border-radius: 5px;
+    background: none repeat scroll 0 0 #48c774;
+    border-radius: 6px;
     color: #fff;
     display: block;
-    font-size: 16px;
-    left: 10%;
+    font-size: 1.25rem;
+    left: 50px;
     margin: 0;
     padding: 10px;
     position: absolute;
     text-align: center;
-    text-transform: uppercase;
-    border: 1px solid #e67e22;
-    width: 80%;z-index: 99;transition: .4s;
+    border: 1px solid white;
+    width: 70%;z-index: 99;transition: .4s;
 }
 .product-hover a:hover {
-  background: #000;
+  /*background: #000;*/
   text-decoration: none;border-color: #444;
 }
 .product-carousel-price ins {
@@ -445,8 +444,8 @@ z-index: 999;}
   overflow: hidden;
 }
 .single-product:hover {}
-.single-product:hover .product-hover a.add-to-cart-link {top: 32%;}
-.single-product:hover .product-hover a.view-details-link {bottom: 32%;}
+.single-product:hover .product-hover a.add-to-cart-link {top: 42%;}
+.single-product:hover .product-hover a.view-details-link {bottom: 20%;}
 .single-product:hover .product-hover:after{left: 0}
 
 
@@ -549,7 +548,7 @@ z-index: 999;}
 .footer-top-area .zigzag-bottom{background: #f4f4f4;}
 .footer-top-area {background: none repeat scroll 0 0 #333;
 color: #999;
-padding: 35px 0 180px;}
+padding: 35px 0 40px;}
 
 
 .footer-bottom-area {background: #000;color: #fff}
@@ -681,7 +680,7 @@ width: 10px;
   margin: 10px 0 0;
 }
 
-.product-big-title-area {background: url("../public/images/crossword.png") repeat scroll 0 0 #e67e22}
+.product-big-title-area {background: url("../public/images/crossword.png") repeat scroll 0 0 #807972}
 
 .product-bit-title h2 {
   font-family: raleway;

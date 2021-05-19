@@ -59,7 +59,7 @@ class AdminController extends Controller
             ->create([
                 'deslogin' => $request->getParam('deslogin'),
                 'despassword' => password_hash($request->getParam('despassword'), PASSWORD_DEFAULT),
-                'inadmin' => $request->getParam('inadmin') == '0' ? false : true
+                'inadmin' => !($request->getParam('inadmin') == '0') // getParam('inadmin') == '0' ? false : true
             ]);
 
         return $response->withRedirect($this->container->router->pathFor('auth.login'));

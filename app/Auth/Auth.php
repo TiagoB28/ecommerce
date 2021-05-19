@@ -27,10 +27,10 @@ class Auth
 
 
     /**
-     * Verifica se a sessão existe.
+     * Verifica se o usuário está logado.
      * @return bool
      */
-    public function check()
+    public function checkLogin()
     {
         return isset($_SESSION['user']);
     }
@@ -66,6 +66,7 @@ class Auth
      */
     public function attemptSite(string $login, string $password)
     {
+
         $user = User::where('deslogin', $login)->first();
 
         if (!$user || !password_verify($password, $user->despassword)) {
@@ -73,7 +74,10 @@ class Auth
             return false;
         }
 
-        $_SESSION['user'] = $user->iduser;
+        $_SESSION = [
+            'user' => $user->iduser,
+            'user_name' => $user->deslogin
+        ];
 
         return true;
     }

@@ -14,7 +14,13 @@ $app->group('/site', function ($app) {
 
     $app->get('/product_detail', 'SiteController:getProductDetail')->setName('site.product-detail');
 
-    $app->get('/cart', 'SiteController:getCartSession')->setName('site.cart');
+    /**
+     * Rotas do Cart
+     */
+    $app->get('/cart', 'SiteController:getCartProducts')->setName('site.cart');
+    $app->get('/cart/{idproduct}/add', 'SiteController:addProduct');
+    $app->get('/cart/{idproduct}/minus', 'SiteController:minusProduct')->setName('site.cart-minus');
+    $app->get('/cart/{idproduct}/remove', 'SiteController:removeProduct');
 });
 
 

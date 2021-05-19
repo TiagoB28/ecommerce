@@ -63,12 +63,6 @@ class AuthController extends Controller
 
     public function loginSite($request, $response)
     {
-        $user_name = User::find($_SESSION['user'])->deslogin;
-
-        $data = [
-            'user_name' => $user_name
-        ];
-
         if($request->isGet())
             return $this->container->view->render($response, 'site/login.twig');
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Auth\Auth;
 use App\Models\User;
 use Slim\Http\{
     Environment,
@@ -11,7 +12,7 @@ session_start();
 
 date_default_timezone_set('America/Sao_Paulo');
 
-require __DIR__ . '/./../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../env.php';
 
 $app = new Slim\App([
@@ -84,14 +85,13 @@ $container['view'] = function($container) {
     $view->addExtension(new Slim\Views\TwigExtension($router, $uri));
     $view->addExtension(new IntlExtension());
 
+    # Notice: Trying to get property 'deslogin' of non-object in...
+//    $user_name = User::find($_SESSION['user'])->deslogin;
+
+    $view->getEnvironment()->addGlobal('session', $_SESSION);
     $view->getEnvironment()->addGlobal('flash', $container->flash);
-
-    $user_name = User::find($_SESSION['user'])->deslogin;
-
-    $view->getEnvironment()->addGlobal('user_name', $user_name );
-
     $view->getEnvironment()->addGlobal('auth', [
-        'check' => $container->auth->check(),
+        'check' => $container->auth->checkLogin(),
         'user' => $container->auth->user()
     ]);
 

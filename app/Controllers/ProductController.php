@@ -20,24 +20,28 @@ class ProductController extends Controller
     }
 
 
+    /**
+     * Criar produto
+     * @param $request
+     * @param $response
+     * @return mixed
+     * @throws \Exception
+     */
     public function createProduct($request, $response)
     {
         if ($request->isGet())
             return $this->container->view->render($response, 'admin/products-create.twig');
 
-        $directory = $this->container->get('upload_directory');
+//        $directory = $this->container->get('upload_directory');
 
         $files = $request->getUploadedFiles();
 
         $newFile = $files['desphoto'];
+        if ($newFile->getError() === UPLOAD_ERR_OK)
+            $uploadFileName = $newFile->getClientFilename();
+            $newFileName = bin2hex(random_bytes(3)) . '_' . $uploadFileName;
+            $newFile->moveTo($this->container->get('upload_directory') . DIRECTORY_SEPARATOR . $newFileName);
 
-
-        $extension = $newFile->getClientFilename();
-        $uploadedFileName = bin2hex(random_bytes(5));
-
-        $upload = sprintf('%s.%0.8s', $uploadedFileName, $extension);
-
-        $newFile->moveTo($directory . DIRECTORY_SEPARATOR . $upload);
 
         $validation = $this->container->validator->validate($request, [
             'desproduct' => v::notEmpty()->alpha()->length(5),
@@ -53,7 +57,7 @@ class ProductController extends Controller
             'vlheight' => $request->getParam('vlheight'),
             'vllength' => $request->getParam('vllength'),
             'vlweight' => $request->getParam('vlweight'),
-            'desimage' => $uploadedFileName
+            'desimage' => $newFileName
         ]);
 
         $uploadedFiles = $request->getUploadedFiles();
@@ -68,6 +72,7 @@ class ProductController extends Controller
 
 
     /**
+     * Update do produto
      * @param $request
      * @param $response
      * @param $args
@@ -85,21 +90,19 @@ class ProductController extends Controller
         if ($request->isGet())
             return $this->container->view->render($response, 'admin/products-update.twig', $data);
 
+        if ($request->ispost())
+//            $directory = $this->container->get('upload_directory');
+            $files = $request->getUploadedFiles();
 
-        $directory = $this->container->get('upload_directory');
-
-        $files = $request->getUploadedFiles();
-        $newFile = $files['desphoto'];
-
-        $extension = pathinfo($newFile->getClientFilename(), PATHINFO_EXTENSION);
-
-        $uploadedFileName = bin2hex(random_bytes(5));
-
-//        $upload = sprintf('%s', $uploadedFileName . '.' . $extension);
-        $upload =  "{$uploadedFileName}.{$extension}";
-
-        $newFile->moveTo($directory . DIRECTORY_SEPARATOR . $upload);
-
+            if (empty($newFile = $files['desphoto'])) {
+                $newFileName = $product->desimage;
+            } else {
+                $newFile = $files['desphoto'];
+                if ($newFile->getError() === UPLOAD_ERR_OK)
+                    $uploadFileName = $newFile->getClientFilename();
+                    $newFileName = bin2hex(random_bytes(3)) . '_' . $uploadFileName;
+                    $newFile->moveTo($this->container->get('upload_directory') . DIRECTORY_SEPARATOR . $newFileName);
+            }
 
         $validation = $this->container->validator->validate($request, [
             'desproduct' => v::notEmpty()->alpha()->length(5),
@@ -115,7 +118,7 @@ class ProductController extends Controller
             'vlheight' => $request->getParam('vlheight'),
             'vllength' => $request->getParam('vllength'),
             'vlweight' => $request->getParam('vlweight'),
-            'desimage' => $uploadedFileName
+            'desimage' => $newFileName
         ]);
 
         $this->container->flash->addMessage('success', 'Usuário atualizado com sucesso!');
@@ -123,7 +126,12 @@ class ProductController extends Controller
         return $response->withRedirect($this->container->router->pathFor('admin.products'));
     }
 
-
+    /**
+     * Deleta produto
+     * @param $request
+     * @param $response
+     * @return mixed
+     */
     public function deleteProduct($request, $response)
     {
         $product = Product::find($request->getParam('id'));

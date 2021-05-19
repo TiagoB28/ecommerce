@@ -58,7 +58,7 @@
         <div class="row">
             <div class="col-md-3 col-sm-6">
                 <div class="single-promo promo1">
-                    <i class="fa fa-money-check"></i>
+                    <i class="fa fa-money"></i>
                     <p>1 ano de garantia</p>
                 </div>
             </div>
@@ -84,29 +84,36 @@
     </div>
 </div> <!-- End promo area -->
 
-<section class="section">
+<section class="section mt-6">
 {#<div class="maincontent-area">#}
     <div class="zigzag-bottom"></div>
     <div class="content">
             <div class="column">
                 <div class="latest-product">
                     <div class="is-flex is-justify-content-center">
-                        <h2 class="title is-size-2">Products</h2>
+                        <h2 class="title is-size-2">Produtos</h2>
                     </div>
                     <div class="carousel" id="bulma-carousel">
 
                         {% for product in products %}
                         <div class="single-product item-1">
                             <div class="product-f-image is-fullwidth">
-                                <figure class="image is-3by4">
+                                <div class="card-image">
+                                <figure class="image is-4by3">
                                     <img src="{{ base_url()}}/images/{{ product.desimage }}.png" alt="product">
                                 </figure>
-                                <div class="product-hover">
-                                    <a href="#" class="add-to-cart-link"><i class="fa fa-shopping-cart"></i> Add to cart</a>
-                                    <a href="#" class="view-details-link"><i class="fa fa-link"></i> See details</a>
                                 </div>
+
+                                <div class="product-hover">
+                                    <a href="{{ base_url() }}/site/cart/{{ product.idproduct }}/add"
+                                       class="add-to-cart-link is-capitalized is-hovered">
+                                        <i class="fa fa-shopping-cart"></i>
+                                        Add to cart
+                                    </a>
+                                </div>
+
                             </div>
-                            <h2><a href="/hcode-slim-3/public/site/product_detail?id={{ product.idproduct }}">{{ product.desproduct }}</a></h2>
+                            <h2><a href="{{ base_url()}}/site/product_detail?id={{ product.idproduct }}">{{ product.desproduct }}</a></h2>
                             <div class="product-carousel-price">
                                 <ins>{{ product.vlprice | format_currency('BRL') }}</ins>  {# ISO 4217 #}
                             </div>

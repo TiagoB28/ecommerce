@@ -19,21 +19,28 @@
 <div class="single-product-area">
     <div class="zigzag-bottom"></div>
     <div class="container">
-        <div class="columns">
+        <div class="columns is-variable is-5">
+
             <div class="column is-half">
-                <form action="{{ path_for('site.login') }}" id="login-form-wrap" class="login" method="post">
-                    <h2>Acessar</h2>
+                <div class="card-bulma">
+                <div class="card-content has-background-light">
+                <form action="{{ path_for('site.login') }}" class="login" method="post">
+                    <div class="content">
+                        <h2 class="has-text-centered">Acessar</h2>
+                    </div>
+
                     <div class="field">
                         <label class="label" for="login">Login <span class="required">*</span></label>
                         <div class="control">
-                            <input type="text" id="login" name="login" class="input">
+                            <input type="text" id="login" name="login"
+                                   class="input" {{ session is defined ? 'disabled' : '' }}>
                         </div>
                     </div>
 
                     <div class="field">
                         <label class="label" for="password">Senha <span class="required">*</span></label>
                         <div class="control">
-                            <input type="password" id="password" name="password" class="input">
+                            <input type="password" id="password" name="password" class="input" {{ session is defined ? 'disabled' : '' }}>
                         </div>
                     </div>
 
@@ -59,43 +66,43 @@
 
                     <div class="clearfix"></div>
                 </form>
-
+                </div>
+                </div>
             </div>
+
             <div class="column is-half">
-                
-                {#<div class="alert alert-danger">
-                    Error!
-                </div>#}
-
-
-                <form id="register-form-wrap" action="{{ path_for('site.create-user') }}" class="register" method="post">
-                    <h2>Criar conta</h2>
+                <div class="card-bulma">
+                    <div class="card-content has-background-light">
+                <form action="{{ path_for('site.create-user') }}" class="register" method="post">
+                    <div class="content">
+                        <h2 class="has-text-centered is-capitalized">criar conta</h2>
+                    </div>
 
                     <div class="field">
                         <label class="label" for="nome">Nome Completo <span class="required">*</span></label>
                         <div class="control">
-                            <input type="text" id="nome" name="name" class="input-text" value="">
+                            <input type="text" id="nome" name="name" class="input" value="">
                         </div>
                     </div>
 
                     <div class="field">
                         <label class="label" for="email">E-mail <span class="required">*</span></label>
                         <div class="control">
-                            <input type="email" id="email" name="email" class="input-text" value="">
+                            <input type="email" id="email" name="email" class="input" value="">
                         </div>
                     </div>
 
                     <div class="field">
                         <label class="label" for="phone">Telefone</label>
                         <div class="control">
-                            <input type="text" id="phone" name="phone" class="input-text" value="" placeholder="(xx)xxxx-xxxx">
+                            <input type="text" id="phone" name="phone" class="input" value="" placeholder="(xx)xxxx-xxxx">
                         </div>
                     </div>
 
                     <div class="field">
                         <label class="label" for="senha">Senha <span class="required">*</span></label>
                         <div class="control">
-                            <input type="password" id="senha" name="password" class="input-text">
+                            <input type="password" id="senha" name="password" class="input">
                         </div>
                     </div>
 
@@ -108,7 +115,9 @@
                     </div>
 
                     <div class="clearfix"></div>
-                </form>               
+                    </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

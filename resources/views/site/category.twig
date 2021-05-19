@@ -35,27 +35,30 @@
                     </div>
                     <div class="content">
                         <div class="product-carousel-price">
-                            <ins>{{ product.vlprice | format_currency('BRL') }}</ins>
+                            <ins class="has-text-dark">{{ product.vlprice | format_currency('BRL') }}</ins>
                         </div>
                     </div>
                     
                     <div class="product-option-shop">
-                        <a class="add_to_cart_button" data-quantity="1" data-product_sku="" data-product_id="70" rel="nofollow" href="/canvas/shop/?add-to-cart=70">Add to cart</a>
+                        <button class="button is-success">
+                        <a class="is-text has-text-white" data-quantity="1" data-product_sku="" data-product_id="70" rel="nofollow" href="/canvas/shop/?add-to-cart=70">Add to cart</a>
+                        </button>
                     </div>                       
                 </div>
             </div>
             {% endfor %}
         </div>
 
-
         <div class="columns">
             <div class="column is-full">
                 <nav class="pagination" role="navigation" aria-label="pagination">
 
-                    <a class="pagination-previous" title="This is the first page" {{ productsRelated.currentPage() == (1) ? 'disabled' : '' }}>
+                    <a href="{{ base_url() }}/site/category?id={{ id }}&page={{ productsRelated.currentPage() - 1 }}"
+                    class="pagination-previous" title="This is the first page"
+                            {{ productsRelated.currentPage() == (1) ? 'disabled' : '' }}>
                         Previous
                     </a>
-                    <a href="{{ base_url() }}/site/category?id={{ id }}{{ productsRelated.url(productsRelated.currentPage() + 1) }}"
+                    <a href="{{ base_url() }}/site/category?id={{ id }}&page={{ productsRelated.currentPage() + 1 }}"
                        class="pagination-next" {{ (productsRelated.currentPage() == productsRelated.lastPage()) ? ' disabled' : '' }}>
                         Next page
                     </a>
@@ -65,7 +68,8 @@
                          <li>
                             <a href="{{ base_url() }}/site/category?id={{ id }}&page={{ i }}"
                                class="pagination-link {{ productsRelated.currentPage() == (i)  ? ' is-current' : '' }}"
-                               aria-label="Page 1" aria-current="page">{{ i }}</a>
+                               aria-label="Page 1" aria-current="page">{{ i }}
+                            </a>
                         </li>
                         {% endfor %}
                     </ul>

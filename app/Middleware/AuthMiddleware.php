@@ -6,7 +6,7 @@ class AuthMiddleware extends Middleware
 {
     public function __invoke($request, $response, $next)
     {
-        if(!$this->container->auth->check())
+        if(!$this->container->auth->checkLogin())
             return $response->withRedirect($this->container->router->pathFor('auth.login')); 
         
         $response = $next($request, $response);

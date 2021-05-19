@@ -14,8 +14,9 @@ class Cart extends Model
     protected $fillable = [
         'dessessionid',
         'iduser',
-        'idaddress',
+        'deszipcode',
         'vlfreight',
+        'nrdays',
         'dtregister'
     ];
 
@@ -24,5 +25,10 @@ class Cart extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'iduser', 'iduser');
+    }
+
+    public function cartProduct()
+    {
+        return $this->hasMany(CartProducts::class);
     }
 }

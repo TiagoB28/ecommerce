@@ -6,8 +6,8 @@
 
 <div class="product-big-title-area">
     <div class="container">
-        <div class="row">
-            <div class="col-md-12">
+        <div class="columns">
+            <div class="column is-full">
                 <div class="product-bit-title text-center">
                     <h2>Carrinho de Compras</h2>
                 </div>
@@ -19,62 +19,73 @@
 <div class="single-product-area">
     <div class="zigzag-bottom"></div>
     <div class="container">
-        <div class="row">
+        <div class="columns">
             
-            <div class="col-md-12">
+            <div class="column is-full">
                 <div class="product-content-right">
                     <div class="woocommerce">
 
                         <form action="/checkout">
                             
-                            <div class="alert alert-danger" role="alert">
-                            Error!
-                            </div>
+                            {#<div class="alert alert-danger" role="alert">
+                                Error!
+                            </div>#}
 
-                            <table cellspacing="0" class="table is-bordered is-striped">
+                            <table class="table-bulma is-bordered is-striped is-fullwidth mb-6">
                                 <thead>
                                     <tr>
                                         <th class="product-remove">&nbsp;</th>
                                         <th class="product-thumbnail">&nbsp;</th>
-                                        <th class="product-name">Produto</th>
-                                        <th class="product-price">Preço</th>
-                                        <th class="product-quantity">Quantidade</th>
-                                        <th class="product-subtotal">Total</th>
+                                        <th class="is-size-4">Produto</th>
+                                        <th class="is-size-4">Preço</th>
+                                        <th class="is-size-4">Quantidade</th>
+                                        <th class="is-size-4">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    
+                                    {% for cartProduct in cartProducts %}
                                     <tr class="cart_item">
                                         <td class="product-remove">
-                                            <a title="Remove this item" class="remove" href="#">×</a> 
+                                            <a title="Remove this item" class="remove"
+                                               href="{{ base_url() }}/site/cart/{{ cartProduct.idproduct }}/remove">
+                                                ×
+                                            </a>
                                         </td>
 
                                         <td class="product-thumbnail">
-                                            <a href="#"><img width="145" height="145" alt="poster_1_up" class="shop_thumbnail" src="/res/site/img/product-thumb-2.jpg"></a>
+                                            <a href="#">
+                                                <img width="145" height="145" alt="poster_1_up" class="shop_thumbnail" src="{{ base_url }}/images/{{ cartProduct.product.desimage }}.png">
+                                            </a>
                                         </td>
 
                                         <td class="product-name">
-                                            <a href="#">Ship Your Idea</a> 
+                                            <a href="#">
+                                                {{  cartProduct.product.desproduct }}
+                                            </a>
                                         </td>
 
                                         <td class="product-price">
-                                            <span class="amount">$700.00</span> 
+                                            <span class="amount">
+                                                {{ cartProduct.product.vlprice | format_currency('BRL') }}
+                                            </span>
                                         </td>
 
                                         <td class="product-quantity">
                                             <div class="quantity buttons_added">
-                                                <input type="button" class="minus" value="-" onclick="window.location.href = '#'">
-                                                <input type="number" size="4" class="input-text qty text" title="Qty" value="1" min="0" step="1">
-                                                <input type="button" class="plus" value="+" onclick="window.location.href = '#'">
+                                                <input type="button" class="minus" value="-" onclick="window.location.href = '{{ base_url() }}/site/cart/{{ cartProduct.idproduct }}/minus'">
+                                                <input type="number" size="4" class="input is-small qty text" title="Qty" value="1" min="0" step="1">
+                                                <input type="button" class="plus" value="+" onclick="window.location.href = '{{ base_url() }}/site/cart/{{ cartProduct.idproduct }}/add'">
                                             </div>
                                         </td>
 
                                         <td class="product-subtotal">
-                                            <span class="amount">$700.00</span> 
+                                            <span class="amount">
+                                                {{ cartProduct.product.vlprice * cartProduct.qtd }}
+                                            </span>
                                         </td>
                                     </tr>
-                                    
-                                </tbody>
+                                    {% endfor %}
+
                             </table>
 
                             <div class="cart-collaterals">
@@ -84,25 +95,23 @@
                                     <h2>Cálculo do Frete</h2>
                                     
                                     <div class="field">
-
                                         <div class="control">
-                                            <label class="label" for="cep">CEP:</label>
-                                            <input type="text" placeholder="00000-000" value="" id="cep" class="input mb-2 is-normal" name="zipcode" style="width: 120px;">
-
+                                            <label class="label is-pulled-left p-2" for="cep">CEP:</label>
+                                            <input type="text" placeholder="00000-000" value="" id="cep" class="input mb-2 is-normal is-pulled-left" name="zipcode" style="width: 120px;">
                                         </div>
                                     <div class="field">
-                                        <button class="button is-success" type="submit" formmethod="post" formaction="/cart/freight">Calcular</button>
+                                        <button class="button is-success ml-3" type="submit" formmethod="post" formaction="/cart/freight">Calcular</button>
 {#                                        <input type="submit" formmethod="post" formaction="/cart/freight" value="CÁLCULAR" class="button">#}
                                     </div>
                                     </div>
 
                                 </div>
 
-                                <div class="cart_totals ">
+                                <div class="cart_totals">
 
                                     <h2>Resumo da Compra</h2>
 
-                                    <table cellspacing="0">
+                                    <table class="table-bulma">
                                         <tbody>
                                             <tr class="cart-subtotal">
                                                 <th>Subtotal</th>
@@ -124,7 +133,7 @@
 
                             </div>
 
-                            <div class="pull-right">
+                            <div class="is-pulled-right">
                                 <button class="button is-success" name="proceed" type="submit">Finalizar compra</button>
 {#                                <input type="submit" value="Finalizar Compra" name="proceed" class="checkout-button button alt wc-forward">#}
                             </div>
