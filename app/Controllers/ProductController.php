@@ -91,7 +91,6 @@ class ProductController extends Controller
             return $this->container->view->render($response, 'admin/products-update.twig', $data);
 
         if ($request->ispost())
-//            $directory = $this->container->get('upload_directory');
             $files = $request->getUploadedFiles();
 
             if (empty($newFile = $files['desphoto'])) {

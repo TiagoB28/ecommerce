@@ -1,0 +1,50 @@
+{% extends "layouts/base_site.twig" %}
+
+{% block title %}Hcode - Reset{% endblock %}
+
+{% block content_site %}
+
+<div class="product-big-title-area">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-full">
+                <div class="product-bit-title text-center">
+                    <h2>Esqueceu a Senha?</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="single-product-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="columns">
+            <div class="column is-full">
+                <form id="login-form-wrap" class="login" method="post" action="{{ path_for('site.reset-password') }}">
+
+                    <input type="hidden" name="code" value="{$code}">
+                    <h2>Olá {$name}, digite uma nova senha:</h2>
+                    <div class="field">
+                        <label class="label" for="password">Nova senha <span class="required">*</span></label>
+                        <div class="control">
+                            <input type="password" id="password" name="password" class="input" style="width:350px">
+                        </div>
+                    </div>
+
+                    <div class="is-clearfix"></div>
+
+                    <div class="field">
+                        <div class="control">
+                            <button class="button is-success" type="submit">Enviar</button>
+                        </div>
+                    </div>
+
+                    <div class="is-clearfix"></div>
+                </form>                    
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

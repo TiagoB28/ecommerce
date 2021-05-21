@@ -4,6 +4,8 @@ use App\Middleware\AuthMiddleware;
 
 $app->group('/site', function ($app) {
     $app->map(['GET', 'POST'], '/login', 'AuthController:loginSite')->setName('site.login');
+    $app->map(['GET', 'POST'], '/forgot', 'AuthController:forgotSite')->setName('site.forgot');
+    $app->map(['GET', 'POST'], '/reset_password', 'AuthController:resetPasswordSite')->setName('site.reset-password');
     $app->get('/logout', 'AuthController:logoutSite')->setName('site.logout');
 
     $app->post('/user-create', 'SiteController:createUserSite')->setName('site.create-user');
@@ -17,10 +19,11 @@ $app->group('/site', function ($app) {
     /**
      * Rotas do Cart
      */
-    $app->get('/cart', 'SiteController:getCartProducts')->setName('site.cart');
-    $app->get('/cart/{idproduct}/add', 'SiteController:addProduct');
-    $app->get('/cart/{idproduct}/minus', 'SiteController:minusProduct')->setName('site.cart-minus');
-    $app->get('/cart/{idproduct}/remove', 'SiteController:removeProduct');
+    $app->map(['GET', 'POST'], '/cart', 'CartController:getCartProducts')->setName('site.cart');
+    $app->get('/cart/{idproduct}/add', 'CartController:addProduct');
+    $app->get('/cart/{idproduct}/minus', 'CartController:minusProduct')->setName('site.cart-minus');
+    $app->get('/cart/{idproduct}/remove', 'CartController:removeProduct');
+
 });
 
 

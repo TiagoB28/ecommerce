@@ -33,14 +33,14 @@
                         <label class="label" for="login">Login <span class="required">*</span></label>
                         <div class="control">
                             <input type="text" id="login" name="login"
-                                   class="input" {{ session is defined ? 'disabled' : '' }}>
+                                   class="input" {{ session.user > 0 ? 'disabled' : '' }}>
                         </div>
                     </div>
 
                     <div class="field">
                         <label class="label" for="password">Senha <span class="required">*</span></label>
                         <div class="control">
-                            <input type="password" id="password" name="password" class="input" {{ session is defined ? 'disabled' : '' }}>
+                            <input type="password" id="password" name="password" class="input" {{ session.user > 0 ? 'disabled' : '' }}>
                         </div>
                     </div>
 
@@ -61,7 +61,7 @@
                         </div>
                     </div>
                     <p class="lost_password">
-                        <a href="/forgot">Esqueceu a senha?</a>
+                        <a href="{{ path_for('site.forgot') }}">Esqueceu a senha?</a>
                     </p>
 
                     <div class="clearfix"></div>

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
+    const SESSION = "User";
+
     protected $table = 'tb_users';
     protected $primaryKey = 'iduser';
 

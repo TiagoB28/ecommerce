@@ -28,4 +28,9 @@ class Product extends Model
         return $this->belongsToMany(Category::class,
             'tb_productscategories','idproduct', 'idcategory');
     }
+
+    /*public function cartProduct()
+    {
+        return $this->hasMany(CartProducts::class);
+    }*/
 }

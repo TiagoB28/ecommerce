@@ -20,6 +20,8 @@ class SiteController extends Controller
             'products' => $products
         ];
 
+//        json($_SESSION);
+
         return $this->container->view->render($response, 'site/home.twig', $data);
     }
 
@@ -104,124 +106,5 @@ class SiteController extends Controller
 
 
 
-    /*public function getCart($request, $response)
-    {
-        $categories = Category::all();
-        $product = Product::find($request->getParam('id'));
 
-        $data = [
-            'categories' => $categories,
-            'product' => $product
-        ];
-
-        return $this->container->view->render($response, 'site/cart.twig', $data);
-    }*/
-
-
-    /**
-     * Tentar pegar o cart pela session, se não existir cria um novo.
-     * @return Cart
-     */
-    public function getFromSession()
-    {
-        $cart = $this->getFromSessionID(); // Tenta pegar o carrinho pela session
-
-        // se carrinho existe, cria um novo.
-        if (empty($cart)) {
-
-            $cart = new Cart;
-            $cart->dessessionid = session_id();
-            $cart->save();
-
-            // Salvar carrinho na Session
-            $_SESSION[Cart::SESSION] = $cart->getAttributes();
-        }
-
-        return $cart;
-    }
-
-
-    /**
-     * Se a sessão existe e o idcart for maior que 0, significa que o carrinho já
-     * foi inserido no banco e que ele já está na sessão.
-     * @return mixed
-     */
-    private function getFromSessionID()
-    {
-
-        $cart_session = $_SESSION[Cart::SESSION];
-
-        if (isset($cart_session) && (int)$cart_session['idcart'] > 0) {
-            $cart = Cart::find($cart_session['idcart']);
-        }else{
-            $cart =  $cart = Cart::where('idcart', '=', session_id())->first();
-        }
-
-        return $cart;
-    }
-
-
-    public function getCartProducts($request, $response)
-    {
-        $cart = $this->getFromSession();
-
-        $cartProducts = CartProducts::with('product')
-            ->where('idcart', '=', $cart->idcart)
-            ->whereNull('dtremoved')
-            ->get();
-
-        $data = [
-            'cartProducts' => $cartProducts
-        ];
-
-        return $this->container->view->render($response, 'site/cart.twig', $data);
-    }
-
-
-    public function addProduct($request, $response, $args)
-    {
-        $cart = $this->getFromSession();
-
-        $cartProduct = CartProducts::firstOrNew([
-            'idcart' =>  $cart->idcart,
-            'idproduct' => $args['idproduct']
-        ]);
-
-        $cartProduct->qtd += 1;
-        $cartProduct->save();
-
-        return $response->withRedirect($this->container->router->pathFor('site.cart'));
-    }
-
-
-    public function minusProduct($request, $response, $args)
-    {
-        $cart = $this->getFromSession();
-
-        $cartProduct = CartProducts::firstOrNew([
-            'idcart' =>  $cart->idcart,
-            'idproduct' => $args['idproduct']
-        ]);
-
-        if ($cartProduct->qtd > 1){
-            $cartProduct->qtd -= 1;
-            $cartProduct->save();
-        }
-
-        return $response->withRedirect($this->container->router->pathFor('site.cart'));
-    }
-
-    public function removeProduct($request, $response, $args){
-        $cart = $this->getFromSession();
-
-        $cartProduct = CartProducts::where('idcart','=',$cart->idcart)
-            ->where('idproduct', '=', $args['idproduct'])
-            ->whereNotNull('dtremoved')
-            ->first();
-
-        $cartProduct->dtremoved = Carbon::now();
-        $cartProduct->save();
-
-        return $response->withRedirect($this->container->router->pathFor('site.cart'));
-    }
 }

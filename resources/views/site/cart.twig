@@ -25,7 +25,7 @@
                 <div class="product-content-right">
                     <div class="woocommerce">
 
-                        <form action="/checkout">
+                        <form role="form" action="{{ path_for('site.cart') }}" method="post">
                             
                             {#<div class="alert alert-danger" role="alert">
                                 Error!
@@ -43,24 +43,27 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {% set totalPrice = 0 %}
                                     {% for cartProduct in cartProducts %}
                                     <tr class="cart_item">
                                         <td class="product-remove">
                                             <a title="Remove this item" class="remove"
                                                href="{{ base_url() }}/site/cart/{{ cartProduct.idproduct }}/remove">
-                                                ×
+                                                <i class="fa fa-trash"></i>
                                             </a>
                                         </td>
 
-                                        <td class="product-thumbnail">
+                                        <td class="">
                                             <a href="#">
-                                                <img width="145" height="145" alt="poster_1_up" class="shop_thumbnail" src="{{ base_url }}/images/{{ cartProduct.product.desimage }}.png">
+                                                <figure class="image is-96x96">
+                                                    <img alt="poster_1_up" class="" src="{{ base_url() }}/images/{{ cartProduct.product.desimage }}">
+                                                </figure>
                                             </a>
                                         </td>
 
                                         <td class="product-name">
                                             <a href="#">
-                                                {{  cartProduct.product.desproduct }}
+                                                {{ cartProduct.product.desproduct }}
                                             </a>
                                         </td>
 
@@ -80,7 +83,8 @@
 
                                         <td class="product-subtotal">
                                             <span class="amount">
-                                                {{ cartProduct.product.vlprice * cartProduct.qtd }}
+                                                {{ cartProduct.product.vlprice  | format_currency('BRL', {multiplier: cartProduct.qtd}) }}
+                                                {% set totalPrice = cartProduct.product.vlprice * cartProduct.qtd %}
                                             </span>
                                         </td>
                                     </tr>
@@ -100,7 +104,7 @@
                                             <input type="text" placeholder="00000-000" value="" id="cep" class="input mb-2 is-normal is-pulled-left" name="zipcode" style="width: 120px;">
                                         </div>
                                     <div class="field">
-                                        <button class="button is-success ml-3" type="submit" formmethod="post" formaction="/cart/freight">Calcular</button>
+                                        <button class="button is-success ml-3" type="submit" formmethod="post" formaction="{{ path_for('site.cart') }}">Calcular</button>
 {#                                        <input type="submit" formmethod="post" formaction="/cart/freight" value="CÁLCULAR" class="button">#}
                                     </div>
                                     </div>
@@ -113,20 +117,28 @@
 
                                     <table class="table-bulma">
                                         <tbody>
+
                                             <tr class="cart-subtotal">
                                                 <th>Subtotal</th>
-                                                <td><span class="amount">$700.00</span></td>
+                                                <td><span class="amount">{{ totalPrice | format_currency('BRL') }}</span></td>
                                             </tr>
 
                                             <tr class="shipping">
                                                 <th>Frete</th>
-                                                <td>$5.00 <small>prazo de 0 dia(s)</small></td>
+                                                <td>{{ pigeonPrice | format_currency('BRL') }}</td>
+                                            </tr>
+
+                                            <tr class="shipping">
+                                                <th>Prazo</th>
+                                                <td>{{ pigeonDeadline }} dia(s)</td>
                                             </tr>
 
                                             <tr class="order-total">
                                                 <th>Total</th>
-                                                <td><strong><span class="amount">$705.00</span></strong> </td>
+                                                {% set total = totalPrice + pigeonPrice %}
+                                                <td><strong><span class="amount">{{ total | format_currency('BRL') }}</span></strong> </td>
                                             </tr>
+
                                         </tbody>
                                     </table>
                                 </div>

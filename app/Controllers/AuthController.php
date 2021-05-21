@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Person;
-use App\Models\User;
+use Respect\Validation\Validator as v;
 
 class AuthController extends Controller
 {
@@ -83,5 +83,69 @@ class AuthController extends Controller
             unset($_SESSION['user']);
             return $response->withRedirect($this->container->router->pathFor('site.home'));
         }
+    }
+
+
+    public function forgotSite($request, $response)
+    {
+        if($request->isGet())
+            return $this->container->view->render($response, 'site/forgot.twig');
+
+        if($request->isPost())
+            $email = $request->getParam('email');
+
+            $person = Person::where('desemail', $email)->first();
+
+            if (count($person) === 0) {
+                $this->container->flash->addMessage('error', 'Email não encontrado.');
+                return $response->withRedirect($this->container->router->pathFor('site.forgot'));
+            } else {
+
+                /**
+                 * A chave tem que ser igual ao que esta no model Mail: $mail->addAddress($to['email'], $to['name']);
+                 */
+                $payload = [
+                    'name' => $person->desperson,
+                    'email' => $person->desemail
+
+                ];
+
+                $this->container->mail->send($payload, 'forgot.twig', 'Recover Password', $payload);
+            }
+
+            $this->container->flash->addMessage('success', 'Email enviado com sucesso.');
+            return $response->withRedirect($this->container->router->pathFor('site.forgot'));
+    }
+
+
+    public function resetPasswordSite($request, $response)
+    {
+        if($request->isGet())
+            return $this->container->view->render($response, 'site/forgot-reset.twig');
+
+        if($request->isPost())
+            $email = $request->getParam('email');
+
+        /*$person = Person::where('desemail', $email)->first();
+
+        if (count($person) === 0) {
+            $this->container->flash->addMessage('error', 'Email não encontrado.');
+            return $response->withRedirect($this->container->router->pathFor('site.forgot'));
+        } else {*/
+
+            /**
+             * A chave tem que ser igual ao que esta no model Mail: $mail->addAddress($to['email'], $to['name']);
+             */
+            /*$payload = [
+                'name' => $person->desperson,
+                'email' => $person->desemail
+
+            ];
+
+            $this->container->mail->send($payload, 'forgot.twig', 'Recover Password', $payload);
+        }
+
+        $this->container->flash->addMessage('success', 'Email enviado com sucesso.');
+        return $response->withRedirect($this->container->router->pathFor('site.forgot'));*/
     }
 }

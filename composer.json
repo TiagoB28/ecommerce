@@ -18,7 +18,8 @@
 		"symfony/framework-bundle": "^5.2",
 		"symfony/twig-bundle": "^5.2",
 		"twig/intl-extra": "^3.3",
-		"monolog/monolog": "^2.2"
+		"monolog/monolog": "^2.2",
+		"flyingluscas/correios-php": "^2.4"
     },
     "autoload": {
         "psr-4": {

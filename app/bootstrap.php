@@ -122,6 +122,9 @@ $container['CategoryController'] = function($container) {
     return new App\Controllers\CategoryController($container);
 };
 
+$container['CartController'] = function($container) {
+    return new App\Controllers\CartController($container);
+};
 
 
 require __DIR__ . '/commons.php';
@@ -131,7 +134,8 @@ getControllers($container, [
     'AuthController',
     'AdminController',
     'ProductController',
-    'CategoryController']);
+    'CategoryController',
+    'CartController']);
 
 $app->add(new App\Middleware\DisplayInputErrorsMiddleware($container));
 
