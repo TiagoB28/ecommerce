@@ -3,10 +3,18 @@
 namespace App\Controllers;
 
 use App\Models\Person;
+use App\Models\User;
+use App\Models\UserPasswordRecovery;
+use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Respect\Validation\Validator as v;
 
 class AuthController extends Controller
 {
+    const CIPHER = 'AES-256-CBC';
+    const OPTIONS = 0;
+
     public function login($request, $response)
     {
         if($request->isGet())
@@ -39,11 +47,19 @@ class AuthController extends Controller
 
         $email = $request->getParam('desemail');
 
-        $person = Person::where('desemail', $email)->first();
+        $person = Person::with('user')->where('desemail', $email)->first();
 
         if (count($person) === 0) {
-            echo 'Email não encontrado';
+            throw new \Exception('Email não encontrado');
         } else {
+
+            $iduser = $person->user()->iduser;
+            $desip = $_SERVER['REMOTE_ADDR'];
+
+            $user = new UserPasswordRecovery();
+            $user->iduser = $iduser;
+            $user->desip = $desip;
+            $user->save();
 
             /**
              * A chave tem que ser igual ao que esta no model Mail: $mail->addAddress($to['email'], $to['name']);
@@ -86,6 +102,12 @@ class AuthController extends Controller
     }
 
 
+    /**
+     * Função para enviar email para o usuário que não é administrado.
+     * @param $request
+     * @param $response
+     * @return mixed
+     */
     public function forgotSite($request, $response)
     {
         if($request->isGet())
@@ -94,19 +116,39 @@ class AuthController extends Controller
         if($request->isPost())
             $email = $request->getParam('email');
 
-            $person = Person::where('desemail', $email)->first();
+            $person = Person::with('user')->where('desemail', $email)->first();
 
-            if (count($person) === 0) {
+            if ($person->idperson === 0) {
                 $this->container->flash->addMessage('error', 'Email não encontrado.');
                 return $response->withRedirect($this->container->router->pathFor('site.forgot'));
             } else {
+
+
+                $iduser = $person->user->iduser;
+                $desip = $_SERVER['REMOTE_ADDR'];
+
+                $userPasswordRecovery = new UserPasswordRecovery();
+                $userPasswordRecovery->iduser = $iduser;
+                $userPasswordRecovery->desip = $desip;
+                $userPasswordRecovery->save();
+
+                $idrecovery = $userPasswordRecovery->idrecovery;
+                $key = 'HcodePhp7_Secret';
+                $iv = '1234567812345678';
+
+
+                $code = openssl_encrypt($idrecovery, self::CIPHER, $key,self::OPTIONS, $iv);
+
+                $link = "http://localhost/hcode-slim-3/public/site/reset_password?code=";
 
                 /**
                  * A chave tem que ser igual ao que esta no model Mail: $mail->addAddress($to['email'], $to['name']);
                  */
                 $payload = [
                     'name' => $person->desperson,
-                    'email' => $person->desemail
+                    'email' => $person->desemail,
+                    'link' => $link,
+                    'code' => $code
 
                 ];
 
@@ -118,34 +160,38 @@ class AuthController extends Controller
     }
 
 
+
+    /**
+     * Função para resetar a senha do usuário
+     * @param $request
+     * @param $response
+     * @return mixed
+     */
     public function resetPasswordSite($request, $response)
     {
+        $code = $request->getQueryParams();
+        $code = $code['code'];
+
+        $key = 'HcodePhp7_Secret';
+        $iv = '1234567812345678';
+
+        $idrecovery = openssl_decrypt($code, self::CIPHER, $key, self::OPTIONS, $iv);
+
+        $userPasswordRecovery = UserPasswordRecovery::where('idrecovery', '=', $idrecovery)->first();
+        $iduser = $userPasswordRecovery->iduser;
+        $user = User::where('iduser', '=', $iduser)->first();
+
         if($request->isGet())
+
             return $this->container->view->render($response, 'site/forgot-reset.twig');
 
-        if($request->isPost())
-            $email = $request->getParam('email');
+        if ($request->isPost()) # erro aqui
 
-        /*$person = Person::where('desemail', $email)->first();
+            $user->update([
+                'despassword' => $request->getParam('password')
+            ]);
 
-        if (count($person) === 0) {
-            $this->container->flash->addMessage('error', 'Email não encontrado.');
-            return $response->withRedirect($this->container->router->pathFor('site.forgot'));
-        } else {*/
-
-            /**
-             * A chave tem que ser igual ao que esta no model Mail: $mail->addAddress($to['email'], $to['name']);
-             */
-            /*$payload = [
-                'name' => $person->desperson,
-                'email' => $person->desemail
-
-            ];
-
-            $this->container->mail->send($payload, 'forgot.twig', 'Recover Password', $payload);
-        }
-
-        $this->container->flash->addMessage('success', 'Email enviado com sucesso.');
-        return $response->withRedirect($this->container->router->pathFor('site.forgot'));*/
+            $this->container->flash->addMessage('success', 'Senha recuperada com sucesso!');
+            return $response->withRedirect($this->container->router->pathFor('site.login'));
     }
 }

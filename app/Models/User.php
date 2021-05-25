@@ -6,12 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
-    const SESSION = "User";
-
     protected $table = 'tb_users';
     protected $primaryKey = 'iduser';
-
-    public $timestamps = false;
 
     protected $fillable = [
         'idperson',
@@ -20,14 +16,20 @@ class User extends Model
         'inadmin'
     ];
 
+    public $timestamps = false;
+
     public function person()
     {
         return $this->belongsTo(Person::class, 'idperson', 'idperson');
     }
 
-
     public function cart()
     {
         return $this->hasOne(Cart::class, 'iduser', 'iduser');
+    }
+
+    public function passwordRecovery()
+    {
+        return $this->hasOne(UserPasswordRecovery::class, 'iduser', 'iduser');
     }
 }

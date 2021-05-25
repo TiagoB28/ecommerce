@@ -34,7 +34,7 @@ class Mail
             $mail->Port = 587;
 
             $mail->CharSet = 'utf-8';
-            $mail->setFrom('from@example.com', 'Florencio Beatty');
+            $mail->setFrom('from@example.com', 'James Smith');
             $mail->addAddress($to['email'], $to['name']);
 
             $mail->isHTML(true);
